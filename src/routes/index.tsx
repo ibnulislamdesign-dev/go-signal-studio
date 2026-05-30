@@ -33,7 +33,7 @@ function Index() {
             Your AI brand assistant — always listening, always growing.
           </p>
           <Link
-            to="/password"
+            to="/welcome"
             className="w-full inline-flex items-center justify-center rounded-2xl bg-[var(--brand-lime)] text-white font-semibold py-4 shadow-[0_8px_24px_-8px_rgba(139,195,74,0.6)] hover:translate-y-[-1px] transition-premium"
           >
             Get Started

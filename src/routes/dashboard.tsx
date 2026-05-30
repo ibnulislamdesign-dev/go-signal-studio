@@ -43,7 +43,10 @@ function Dashboard() {
         <h1 className="mt-5 text-lg font-bold text-[var(--brand-forest)]">Welcome back, John</h1>
 
         {/* Trial card */}
-        <div className="mt-3 rounded-2xl p-4 bg-gradient-to-br from-[var(--brand-lime)] to-[#7cb342] text-white shadow-[0_12px_32px_-12px_rgba(139,195,74,0.7)]">
+        <Link
+          to="/welcome"
+          className="mt-3 block rounded-2xl p-4 bg-gradient-to-br from-[var(--brand-lime)] to-[#7cb342] text-white shadow-[0_12px_32px_-12px_rgba(139,195,74,0.7)] transition-premium hover:translate-y-[-1px] active:scale-[0.99]"
+        >
           <div className="flex items-start justify-between">
             <div>
               <div className="text-base font-bold">Complete your setup</div>
@@ -51,11 +54,11 @@ function Dashboard() {
                 Your 14-day free trial ends on June 13th. Subscribe now to keep your AI assistant active!
               </p>
             </div>
-            <button className="inline-flex items-center gap-1 text-xs font-semibold whitespace-nowrap">
+            <span className="inline-flex items-center gap-1 text-xs font-semibold whitespace-nowrap">
               view all <ChevronDown className="w-3 h-3" />
-            </button>
+            </span>
           </div>
-        </div>
+        </Link>
 
         {/* Live traffic card */}
         <div className="mt-3 rounded-2xl glass p-4 shadow-[var(--shadow-card)]">
