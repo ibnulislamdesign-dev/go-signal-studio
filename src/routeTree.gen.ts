@@ -9,14 +9,34 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WelcomeRouteImport } from './routes/welcome'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as PasswordRouteImport } from './routes/password'
+import { Route as OtpRouteImport } from './routes/otp'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CongratulationsRouteImport } from './routes/congratulations'
+import { Route as BusinessInfoRouteImport } from './routes/business-info'
+import { Route as BusinessCategoryRouteImport } from './routes/business-category'
 import { Route as IndexRouteImport } from './routes/index'
 
+const WelcomeRoute = WelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PasswordRoute = PasswordRouteImport.update({
   id: '/password',
   path: '/password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OtpRoute = OtpRouteImport.update({
+  id: '/otp',
+  path: '/otp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -29,6 +49,16 @@ const CongratulationsRoute = CongratulationsRouteImport.update({
   path: '/congratulations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BusinessInfoRoute = BusinessInfoRouteImport.update({
+  id: '/business-info',
+  path: '/business-info',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BusinessCategoryRoute = BusinessCategoryRouteImport.update({
+  id: '/business-category',
+  path: '/business-category',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -37,45 +67,114 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/business-category': typeof BusinessCategoryRoute
+  '/business-info': typeof BusinessInfoRoute
   '/congratulations': typeof CongratulationsRoute
   '/dashboard': typeof DashboardRoute
+  '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
+  '/signup': typeof SignupRoute
+  '/welcome': typeof WelcomeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/business-category': typeof BusinessCategoryRoute
+  '/business-info': typeof BusinessInfoRoute
   '/congratulations': typeof CongratulationsRoute
   '/dashboard': typeof DashboardRoute
+  '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
+  '/signup': typeof SignupRoute
+  '/welcome': typeof WelcomeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/business-category': typeof BusinessCategoryRoute
+  '/business-info': typeof BusinessInfoRoute
   '/congratulations': typeof CongratulationsRoute
   '/dashboard': typeof DashboardRoute
+  '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
+  '/signup': typeof SignupRoute
+  '/welcome': typeof WelcomeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/congratulations' | '/dashboard' | '/password'
+  fullPaths:
+    | '/'
+    | '/business-category'
+    | '/business-info'
+    | '/congratulations'
+    | '/dashboard'
+    | '/otp'
+    | '/password'
+    | '/signup'
+    | '/welcome'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/congratulations' | '/dashboard' | '/password'
-  id: '__root__' | '/' | '/congratulations' | '/dashboard' | '/password'
+  to:
+    | '/'
+    | '/business-category'
+    | '/business-info'
+    | '/congratulations'
+    | '/dashboard'
+    | '/otp'
+    | '/password'
+    | '/signup'
+    | '/welcome'
+  id:
+    | '__root__'
+    | '/'
+    | '/business-category'
+    | '/business-info'
+    | '/congratulations'
+    | '/dashboard'
+    | '/otp'
+    | '/password'
+    | '/signup'
+    | '/welcome'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BusinessCategoryRoute: typeof BusinessCategoryRoute
+  BusinessInfoRoute: typeof BusinessInfoRoute
   CongratulationsRoute: typeof CongratulationsRoute
   DashboardRoute: typeof DashboardRoute
+  OtpRoute: typeof OtpRoute
   PasswordRoute: typeof PasswordRoute
+  SignupRoute: typeof SignupRoute
+  WelcomeRoute: typeof WelcomeRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/password': {
       id: '/password'
       path: '/password'
       fullPath: '/password'
       preLoaderRoute: typeof PasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/otp': {
+      id: '/otp'
+      path: '/otp'
+      fullPath: '/otp'
+      preLoaderRoute: typeof OtpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -92,6 +191,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CongratulationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/business-info': {
+      id: '/business-info'
+      path: '/business-info'
+      fullPath: '/business-info'
+      preLoaderRoute: typeof BusinessInfoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/business-category': {
+      id: '/business-category'
+      path: '/business-category'
+      fullPath: '/business-category'
+      preLoaderRoute: typeof BusinessCategoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -104,9 +217,14 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BusinessCategoryRoute: BusinessCategoryRoute,
+  BusinessInfoRoute: BusinessInfoRoute,
   CongratulationsRoute: CongratulationsRoute,
   DashboardRoute: DashboardRoute,
+  OtpRoute: OtpRoute,
   PasswordRoute: PasswordRoute,
+  SignupRoute: SignupRoute,
+  WelcomeRoute: WelcomeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
