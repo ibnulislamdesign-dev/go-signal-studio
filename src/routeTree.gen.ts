@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WelcomeRouteImport } from './routes/welcome'
+import { Route as TrafficRouteImport } from './routes/traffic'
 import { Route as SubscriptionRouteImport } from './routes/subscription'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as PasswordRouteImport } from './routes/password'
@@ -25,6 +26,11 @@ import { Route as NotificationsIdRouteImport } from './routes/notifications.$id'
 const WelcomeRoute = WelcomeRouteImport.update({
   id: '/welcome',
   path: '/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrafficRoute = TrafficRouteImport.update({
+  id: '/traffic',
+  path: '/traffic',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SubscriptionRoute = SubscriptionRouteImport.update({
@@ -94,6 +100,7 @@ export interface FileRoutesByFullPath {
   '/password': typeof PasswordRoute
   '/signup': typeof SignupRoute
   '/subscription': typeof SubscriptionRoute
+  '/traffic': typeof TrafficRoute
   '/welcome': typeof WelcomeRoute
   '/notifications/$id': typeof NotificationsIdRoute
 }
@@ -108,6 +115,7 @@ export interface FileRoutesByTo {
   '/password': typeof PasswordRoute
   '/signup': typeof SignupRoute
   '/subscription': typeof SubscriptionRoute
+  '/traffic': typeof TrafficRoute
   '/welcome': typeof WelcomeRoute
   '/notifications/$id': typeof NotificationsIdRoute
 }
@@ -123,6 +131,7 @@ export interface FileRoutesById {
   '/password': typeof PasswordRoute
   '/signup': typeof SignupRoute
   '/subscription': typeof SubscriptionRoute
+  '/traffic': typeof TrafficRoute
   '/welcome': typeof WelcomeRoute
   '/notifications/$id': typeof NotificationsIdRoute
 }
@@ -139,6 +148,7 @@ export interface FileRouteTypes {
     | '/password'
     | '/signup'
     | '/subscription'
+    | '/traffic'
     | '/welcome'
     | '/notifications/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -153,6 +163,7 @@ export interface FileRouteTypes {
     | '/password'
     | '/signup'
     | '/subscription'
+    | '/traffic'
     | '/welcome'
     | '/notifications/$id'
   id:
@@ -167,6 +178,7 @@ export interface FileRouteTypes {
     | '/password'
     | '/signup'
     | '/subscription'
+    | '/traffic'
     | '/welcome'
     | '/notifications/$id'
   fileRoutesById: FileRoutesById
@@ -182,6 +194,7 @@ export interface RootRouteChildren {
   PasswordRoute: typeof PasswordRoute
   SignupRoute: typeof SignupRoute
   SubscriptionRoute: typeof SubscriptionRoute
+  TrafficRoute: typeof TrafficRoute
   WelcomeRoute: typeof WelcomeRoute
 }
 
@@ -192,6 +205,13 @@ declare module '@tanstack/react-router' {
       path: '/welcome'
       fullPath: '/welcome'
       preLoaderRoute: typeof WelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/traffic': {
+      id: '/traffic'
+      path: '/traffic'
+      fullPath: '/traffic'
+      preLoaderRoute: typeof TrafficRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/subscription': {
@@ -297,6 +317,7 @@ const rootRouteChildren: RootRouteChildren = {
   PasswordRoute: PasswordRoute,
   SignupRoute: SignupRoute,
   SubscriptionRoute: SubscriptionRoute,
+  TrafficRoute: TrafficRoute,
   WelcomeRoute: WelcomeRoute,
 }
 export const routeTree = rootRouteImport
