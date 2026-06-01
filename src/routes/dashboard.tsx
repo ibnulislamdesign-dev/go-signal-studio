@@ -34,17 +34,21 @@ function Dashboard() {
               <div className="text-[10px] font-medium text-[var(--brand-lime)]">The Brand Future</div>
             </div>
           </div>
-          <button className="relative w-10 h-10 inline-flex items-center justify-center rounded-full bg-white shadow-sm transition-premium hover:scale-105">
+          <Link
+            to="/notifications"
+            className="relative w-10 h-10 inline-flex items-center justify-center rounded-full bg-white shadow-sm transition-premium hover:scale-105"
+            aria-label="Notifications"
+          >
             <Bell className="w-5 h-5 text-[var(--brand-forest)]" />
             <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold inline-flex items-center justify-center">5</span>
-          </button>
+          </Link>
         </div>
 
         <h1 className="mt-5 text-lg font-bold text-[var(--brand-forest)]">Welcome back, John</h1>
 
         {/* Trial card */}
         <Link
-          to="/welcome"
+          to="/subscription"
           className="mt-3 block rounded-2xl p-4 bg-gradient-to-br from-[var(--brand-lime)] to-[#7cb342] text-white shadow-[0_12px_32px_-12px_rgba(139,195,74,0.7)] transition-premium hover:translate-y-[-1px] active:scale-[0.99]"
         >
           <div className="flex items-start justify-between">
@@ -55,14 +59,22 @@ function Dashboard() {
               </p>
             </div>
             <span className="inline-flex items-center gap-1 text-xs font-semibold whitespace-nowrap">
-              view all <ChevronDown className="w-3 h-3" />
+              manage <ChevronDown className="w-3 h-3" />
             </span>
           </div>
         </Link>
 
         {/* Live traffic card */}
         <div className="mt-3 rounded-2xl glass p-4 shadow-[var(--shadow-card)]">
-          <div className="text-base font-bold text-[var(--brand-forest)]">Live Traffic</div>
+          <div className="flex items-center justify-between">
+            <div className="text-base font-bold text-[var(--brand-forest)]">Live Traffic</div>
+            <Link
+              to="/traffic"
+              className="inline-flex items-center gap-1 text-xs font-semibold text-[var(--brand-lime)] hover:text-[#5a8a2a] transition-premium"
+            >
+              view all <ChevronDown className="w-3 h-3" />
+            </Link>
+          </div>
           <ul className="mt-3 space-y-3">
             <TrafficRow icon={<PhoneCall className="w-4 h-4" />} label="Ongoing: 2m 11s" detail="09040728892 › Call: Order 2 Shadda Fabric (Pending)" />
             <TrafficRow icon={<MessageCircle className="w-4 h-4" />} label="WhatsApp: 5m ago" detail="07033445566 › Booked: Consultation (Unread)" />

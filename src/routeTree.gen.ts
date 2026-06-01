@@ -10,18 +10,32 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WelcomeRouteImport } from './routes/welcome'
+import { Route as TrafficRouteImport } from './routes/traffic'
+import { Route as SubscriptionRouteImport } from './routes/subscription'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as PasswordRouteImport } from './routes/password'
 import { Route as OtpRouteImport } from './routes/otp'
+import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CongratulationsRouteImport } from './routes/congratulations'
 import { Route as BusinessInfoRouteImport } from './routes/business-info'
 import { Route as BusinessCategoryRouteImport } from './routes/business-category'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as NotificationsIdRouteImport } from './routes/notifications.$id'
 
 const WelcomeRoute = WelcomeRouteImport.update({
   id: '/welcome',
   path: '/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrafficRoute = TrafficRouteImport.update({
+  id: '/traffic',
+  path: '/traffic',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubscriptionRoute = SubscriptionRouteImport.update({
+  id: '/subscription',
+  path: '/subscription',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SignupRoute = SignupRouteImport.update({
@@ -37,6 +51,11 @@ const PasswordRoute = PasswordRouteImport.update({
 const OtpRoute = OtpRouteImport.update({
   id: '/otp',
   path: '/otp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -64,6 +83,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NotificationsIdRoute = NotificationsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => NotificationsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -71,10 +95,14 @@ export interface FileRoutesByFullPath {
   '/business-info': typeof BusinessInfoRoute
   '/congratulations': typeof CongratulationsRoute
   '/dashboard': typeof DashboardRoute
+  '/notifications': typeof NotificationsRouteWithChildren
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
   '/signup': typeof SignupRoute
+  '/subscription': typeof SubscriptionRoute
+  '/traffic': typeof TrafficRoute
   '/welcome': typeof WelcomeRoute
+  '/notifications/$id': typeof NotificationsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -82,10 +110,14 @@ export interface FileRoutesByTo {
   '/business-info': typeof BusinessInfoRoute
   '/congratulations': typeof CongratulationsRoute
   '/dashboard': typeof DashboardRoute
+  '/notifications': typeof NotificationsRouteWithChildren
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
   '/signup': typeof SignupRoute
+  '/subscription': typeof SubscriptionRoute
+  '/traffic': typeof TrafficRoute
   '/welcome': typeof WelcomeRoute
+  '/notifications/$id': typeof NotificationsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -94,10 +126,14 @@ export interface FileRoutesById {
   '/business-info': typeof BusinessInfoRoute
   '/congratulations': typeof CongratulationsRoute
   '/dashboard': typeof DashboardRoute
+  '/notifications': typeof NotificationsRouteWithChildren
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
   '/signup': typeof SignupRoute
+  '/subscription': typeof SubscriptionRoute
+  '/traffic': typeof TrafficRoute
   '/welcome': typeof WelcomeRoute
+  '/notifications/$id': typeof NotificationsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -107,10 +143,14 @@ export interface FileRouteTypes {
     | '/business-info'
     | '/congratulations'
     | '/dashboard'
+    | '/notifications'
     | '/otp'
     | '/password'
     | '/signup'
+    | '/subscription'
+    | '/traffic'
     | '/welcome'
+    | '/notifications/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -118,10 +158,14 @@ export interface FileRouteTypes {
     | '/business-info'
     | '/congratulations'
     | '/dashboard'
+    | '/notifications'
     | '/otp'
     | '/password'
     | '/signup'
+    | '/subscription'
+    | '/traffic'
     | '/welcome'
+    | '/notifications/$id'
   id:
     | '__root__'
     | '/'
@@ -129,10 +173,14 @@ export interface FileRouteTypes {
     | '/business-info'
     | '/congratulations'
     | '/dashboard'
+    | '/notifications'
     | '/otp'
     | '/password'
     | '/signup'
+    | '/subscription'
+    | '/traffic'
     | '/welcome'
+    | '/notifications/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -141,9 +189,12 @@ export interface RootRouteChildren {
   BusinessInfoRoute: typeof BusinessInfoRoute
   CongratulationsRoute: typeof CongratulationsRoute
   DashboardRoute: typeof DashboardRoute
+  NotificationsRoute: typeof NotificationsRouteWithChildren
   OtpRoute: typeof OtpRoute
   PasswordRoute: typeof PasswordRoute
   SignupRoute: typeof SignupRoute
+  SubscriptionRoute: typeof SubscriptionRoute
+  TrafficRoute: typeof TrafficRoute
   WelcomeRoute: typeof WelcomeRoute
 }
 
@@ -154,6 +205,20 @@ declare module '@tanstack/react-router' {
       path: '/welcome'
       fullPath: '/welcome'
       preLoaderRoute: typeof WelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/traffic': {
+      id: '/traffic'
+      path: '/traffic'
+      fullPath: '/traffic'
+      preLoaderRoute: typeof TrafficRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscription': {
+      id: '/subscription'
+      path: '/subscription'
+      fullPath: '/subscription'
+      preLoaderRoute: typeof SubscriptionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/signup': {
@@ -175,6 +240,13 @@ declare module '@tanstack/react-router' {
       path: '/otp'
       fullPath: '/otp'
       preLoaderRoute: typeof OtpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -212,8 +284,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/notifications/$id': {
+      id: '/notifications/$id'
+      path: '/$id'
+      fullPath: '/notifications/$id'
+      preLoaderRoute: typeof NotificationsIdRouteImport
+      parentRoute: typeof NotificationsRoute
+    }
   }
 }
+
+interface NotificationsRouteChildren {
+  NotificationsIdRoute: typeof NotificationsIdRoute
+}
+
+const NotificationsRouteChildren: NotificationsRouteChildren = {
+  NotificationsIdRoute: NotificationsIdRoute,
+}
+
+const NotificationsRouteWithChildren = NotificationsRoute._addFileChildren(
+  NotificationsRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -221,9 +312,12 @@ const rootRouteChildren: RootRouteChildren = {
   BusinessInfoRoute: BusinessInfoRoute,
   CongratulationsRoute: CongratulationsRoute,
   DashboardRoute: DashboardRoute,
+  NotificationsRoute: NotificationsRouteWithChildren,
   OtpRoute: OtpRoute,
   PasswordRoute: PasswordRoute,
   SignupRoute: SignupRoute,
+  SubscriptionRoute: SubscriptionRoute,
+  TrafficRoute: TrafficRoute,
   WelcomeRoute: WelcomeRoute,
 }
 export const routeTree = rootRouteImport
