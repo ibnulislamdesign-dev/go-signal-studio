@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { MobileShell, StatusBar, HomeIndicator } from "@/components/MobileShell";
 import { ChevronLeft, ChevronDown } from "lucide-react";
+import { PhoneInput } from "@/components/PhoneInput";
 
 export const Route = createFileRoute("/business-info")({
   head: () => ({
@@ -16,8 +17,10 @@ export const Route = createFileRoute("/business-info")({
 function BusinessInfo() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    fullName: "", businessName: "", waCode: "+234", whatsapp: "",
-    phone: "", platform: "Tik Tok", username: "", address: "",
+    fullName: "", businessName: "",
+    waCode: "+234", whatsapp: "",
+    phoneCode: "+234", phone: "",
+    platform: "Tik Tok", username: "", address: "",
   });
   const valid = form.fullName.trim() && form.businessName.trim() && form.whatsapp.trim() && form.phone.trim() && form.address.trim();
   const set = (k: keyof typeof form) => (v: string) => setForm((f) => ({ ...f, [k]: v }));
@@ -43,26 +46,25 @@ function BusinessInfo() {
 
           <div>
             <Label>Whatsapp NO</Label>
-            <div className="mt-2 flex gap-2">
-              <div className="relative w-24">
-                <select
-                  value={form.waCode}
-                  onChange={(e) => set("waCode")(e.target.value)}
-                  className="appearance-none w-full h-12 rounded-xl bg-white border border-[var(--brand-forest)]/10 pl-3 pr-7 text-sm text-[var(--brand-forest)] outline-none focus:border-[var(--brand-lime)] transition-premium"
-                >
-                  {["+234", "+1", "+44", "+233", "+254"].map((c) => <option key={c}>{c}</option>)}
-                </select>
-                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--brand-forest)]/50 pointer-events-none" />
-              </div>
-              <input
-                inputMode="tel" maxLength={15}
-                value={form.whatsapp} onChange={(e) => set("whatsapp")(e.target.value)}
-                className="flex-1 h-12 rounded-xl bg-white border border-[var(--brand-forest)]/10 px-3 text-sm text-[var(--brand-forest)] outline-none focus:border-[var(--brand-lime)] focus:ring-4 focus:ring-[var(--brand-lime)]/15 transition-premium"
+            <div className="mt-2">
+              <PhoneInput
+                dial={form.waCode}
+                number={form.whatsapp}
+                onChange={(v) => setForm((f) => ({ ...f, waCode: v.dial, whatsapp: v.number }))}
               />
             </div>
           </div>
 
-          <Field label="Phone NO" value={form.phone} onChange={set("phone")} inputMode="tel" maxLength={15} />
+          <div>
+            <Label>Phone NO</Label>
+            <div className="mt-2">
+              <PhoneInput
+                dial={form.phoneCode}
+                number={form.phone}
+                onChange={(v) => setForm((f) => ({ ...f, phoneCode: v.dial, phone: v.number }))}
+              />
+            </div>
+          </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
