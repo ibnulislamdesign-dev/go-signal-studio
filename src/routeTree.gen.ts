@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WelcomeRouteImport } from './routes/welcome'
+import { Route as SubscriptionRouteImport } from './routes/subscription'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as PasswordRouteImport } from './routes/password'
 import { Route as OtpRouteImport } from './routes/otp'
@@ -24,6 +25,11 @@ import { Route as NotificationsIdRouteImport } from './routes/notifications.$id'
 const WelcomeRoute = WelcomeRouteImport.update({
   id: '/welcome',
   path: '/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubscriptionRoute = SubscriptionRouteImport.update({
+  id: '/subscription',
+  path: '/subscription',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SignupRoute = SignupRouteImport.update({
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
   '/signup': typeof SignupRoute
+  '/subscription': typeof SubscriptionRoute
   '/welcome': typeof WelcomeRoute
   '/notifications/$id': typeof NotificationsIdRoute
 }
@@ -100,6 +107,7 @@ export interface FileRoutesByTo {
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
   '/signup': typeof SignupRoute
+  '/subscription': typeof SubscriptionRoute
   '/welcome': typeof WelcomeRoute
   '/notifications/$id': typeof NotificationsIdRoute
 }
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
   '/signup': typeof SignupRoute
+  '/subscription': typeof SubscriptionRoute
   '/welcome': typeof WelcomeRoute
   '/notifications/$id': typeof NotificationsIdRoute
 }
@@ -129,6 +138,7 @@ export interface FileRouteTypes {
     | '/otp'
     | '/password'
     | '/signup'
+    | '/subscription'
     | '/welcome'
     | '/notifications/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -142,6 +152,7 @@ export interface FileRouteTypes {
     | '/otp'
     | '/password'
     | '/signup'
+    | '/subscription'
     | '/welcome'
     | '/notifications/$id'
   id:
@@ -155,6 +166,7 @@ export interface FileRouteTypes {
     | '/otp'
     | '/password'
     | '/signup'
+    | '/subscription'
     | '/welcome'
     | '/notifications/$id'
   fileRoutesById: FileRoutesById
@@ -169,6 +181,7 @@ export interface RootRouteChildren {
   OtpRoute: typeof OtpRoute
   PasswordRoute: typeof PasswordRoute
   SignupRoute: typeof SignupRoute
+  SubscriptionRoute: typeof SubscriptionRoute
   WelcomeRoute: typeof WelcomeRoute
 }
 
@@ -179,6 +192,13 @@ declare module '@tanstack/react-router' {
       path: '/welcome'
       fullPath: '/welcome'
       preLoaderRoute: typeof WelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscription': {
+      id: '/subscription'
+      path: '/subscription'
+      fullPath: '/subscription'
+      preLoaderRoute: typeof SubscriptionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/signup': {
@@ -276,6 +296,7 @@ const rootRouteChildren: RootRouteChildren = {
   OtpRoute: OtpRoute,
   PasswordRoute: PasswordRoute,
   SignupRoute: SignupRoute,
+  SubscriptionRoute: SubscriptionRoute,
   WelcomeRoute: WelcomeRoute,
 }
 export const routeTree = rootRouteImport
