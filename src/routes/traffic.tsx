@@ -15,13 +15,13 @@ export const Route = createFileRoute("/traffic")({
 
 type Status = "Query" | "Pending" | "Booked" | "Closed";
 type Channel = "call" | "whatsapp" | "missed";
-type Log = { id: string; channel: Channel; number: string; summary: string; status: Status; time: string };
+type Log = { id: string; channel: Channel; number: string; summary: string; status: Status; time: string; linkId?: string };
 
 const LOGS: Log[] = [
-  { id: "l1",  channel: "call",     number: "09040728892", summary: "Asked about Shadda fabric royal blue availability", status: "Query",   time: "2m ago" },
-  { id: "l2",  channel: "call",     number: "08123456701", summary: "Order: 2 yards Aso-Oke, awaiting transfer confirmation", status: "Pending", time: "11m ago" },
-  { id: "l3",  channel: "whatsapp", number: "07033445566", summary: "Consultation booked for Friday 2:00 PM", status: "Booked",  time: "23m ago" },
-  { id: "l4",  channel: "call",     number: "08098765432", summary: "Shea butter 500g stock query — restock Friday", status: "Closed",  time: "41m ago" },
+  { id: "l1",  channel: "call",     number: "09040728892", summary: "Asked about Shadda fabric royal blue availability", status: "Query",   time: "Live · 2m 11s", linkId: "l1" },
+  { id: "l2",  channel: "call",     number: "08123456701", summary: "Order: 2 yards Aso-Oke, awaiting transfer confirmation", status: "Pending", time: "11m ago", linkId: "l2" },
+  { id: "l3",  channel: "whatsapp", number: "07033445566", summary: "Consultation booked for Friday 2:00 PM", status: "Booked",  time: "23m ago", linkId: "l3" },
+  { id: "l4",  channel: "call",     number: "08098765432", summary: "Shea butter 500g stock query — restock Friday", status: "Closed",  time: "41m ago", linkId: "l4" },
   { id: "l5",  channel: "whatsapp", number: "08144112233", summary: "Asked for delivery rates to Ibadan", status: "Query",   time: "1h ago" },
   { id: "l6",  channel: "call",     number: "07087654321", summary: "3 yards Adire ordered, payment pending", status: "Pending", time: "1h ago" },
   { id: "l7",  channel: "whatsapp", number: "09011224455", summary: "Pickup time locked for Saturday 11:00 AM", status: "Booked",  time: "2h ago" },
@@ -102,9 +102,9 @@ function Traffic() {
             <li
               key={l.id}
               style={{ animationDelay: `${i * 25}ms` }}
-              className="animate-fade-up rounded-2xl bg-white border border-[var(--brand-forest)]/5 p-3.5 shadow-[var(--shadow-card)] transition-premium hover:border-[var(--brand-lime)]/40"
+              className="animate-fade-up"
             >
-              <div className="flex items-start gap-3">
+              <LogShell linkId={l.linkId}>
                 <ChannelIcon channel={l.channel} />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
@@ -116,7 +116,7 @@ function Traffic() {
                     {l.channel === "whatsapp" ? "WhatsApp" : l.channel === "missed" ? "Missed call" : "Voice call"} · {l.time}
                   </div>
                 </div>
-              </div>
+              </LogShell>
             </li>
           ))}
         </ul>
@@ -124,6 +124,18 @@ function Traffic() {
       <HomeIndicator />
     </MobileShell>
   );
+}
+
+function LogShell({ linkId, children }: { linkId?: string; children: React.ReactNode }) {
+  const base = "flex items-start gap-3 rounded-2xl bg-white border border-[var(--brand-forest)]/5 p-3.5 shadow-[var(--shadow-card)] transition-premium hover:border-[var(--brand-lime)]/40 hover:translate-y-[-1px]";
+  if (linkId) {
+    return (
+      <Link to="/traffic/$id" params={{ id: linkId }} className={base}>
+        {children}
+      </Link>
+    );
+  }
+  return <div className={base}>{children}</div>;
 }
 
 function ChannelIcon({ channel }: { channel: Channel }) {
