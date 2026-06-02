@@ -21,6 +21,7 @@ import { Route as CongratulationsRouteImport } from './routes/congratulations'
 import { Route as BusinessInfoRouteImport } from './routes/business-info'
 import { Route as BusinessCategoryRouteImport } from './routes/business-category'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TrafficIdRouteImport } from './routes/traffic.$id'
 import { Route as NotificationsIdRouteImport } from './routes/notifications.$id'
 
 const WelcomeRoute = WelcomeRouteImport.update({
@@ -83,6 +84,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TrafficIdRoute = TrafficIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => TrafficRoute,
+} as any)
 const NotificationsIdRoute = NotificationsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -100,9 +106,10 @@ export interface FileRoutesByFullPath {
   '/password': typeof PasswordRoute
   '/signup': typeof SignupRoute
   '/subscription': typeof SubscriptionRoute
-  '/traffic': typeof TrafficRoute
+  '/traffic': typeof TrafficRouteWithChildren
   '/welcome': typeof WelcomeRoute
   '/notifications/$id': typeof NotificationsIdRoute
+  '/traffic/$id': typeof TrafficIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -115,9 +122,10 @@ export interface FileRoutesByTo {
   '/password': typeof PasswordRoute
   '/signup': typeof SignupRoute
   '/subscription': typeof SubscriptionRoute
-  '/traffic': typeof TrafficRoute
+  '/traffic': typeof TrafficRouteWithChildren
   '/welcome': typeof WelcomeRoute
   '/notifications/$id': typeof NotificationsIdRoute
+  '/traffic/$id': typeof TrafficIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -131,9 +139,10 @@ export interface FileRoutesById {
   '/password': typeof PasswordRoute
   '/signup': typeof SignupRoute
   '/subscription': typeof SubscriptionRoute
-  '/traffic': typeof TrafficRoute
+  '/traffic': typeof TrafficRouteWithChildren
   '/welcome': typeof WelcomeRoute
   '/notifications/$id': typeof NotificationsIdRoute
+  '/traffic/$id': typeof TrafficIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -151,6 +160,7 @@ export interface FileRouteTypes {
     | '/traffic'
     | '/welcome'
     | '/notifications/$id'
+    | '/traffic/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -166,6 +176,7 @@ export interface FileRouteTypes {
     | '/traffic'
     | '/welcome'
     | '/notifications/$id'
+    | '/traffic/$id'
   id:
     | '__root__'
     | '/'
@@ -181,6 +192,7 @@ export interface FileRouteTypes {
     | '/traffic'
     | '/welcome'
     | '/notifications/$id'
+    | '/traffic/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -194,7 +206,7 @@ export interface RootRouteChildren {
   PasswordRoute: typeof PasswordRoute
   SignupRoute: typeof SignupRoute
   SubscriptionRoute: typeof SubscriptionRoute
-  TrafficRoute: typeof TrafficRoute
+  TrafficRoute: typeof TrafficRouteWithChildren
   WelcomeRoute: typeof WelcomeRoute
 }
 
@@ -284,6 +296,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/traffic/$id': {
+      id: '/traffic/$id'
+      path: '/$id'
+      fullPath: '/traffic/$id'
+      preLoaderRoute: typeof TrafficIdRouteImport
+      parentRoute: typeof TrafficRoute
+    }
     '/notifications/$id': {
       id: '/notifications/$id'
       path: '/$id'
@@ -306,6 +325,17 @@ const NotificationsRouteWithChildren = NotificationsRoute._addFileChildren(
   NotificationsRouteChildren,
 )
 
+interface TrafficRouteChildren {
+  TrafficIdRoute: typeof TrafficIdRoute
+}
+
+const TrafficRouteChildren: TrafficRouteChildren = {
+  TrafficIdRoute: TrafficIdRoute,
+}
+
+const TrafficRouteWithChildren =
+  TrafficRoute._addFileChildren(TrafficRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BusinessCategoryRoute: BusinessCategoryRoute,
@@ -317,7 +347,7 @@ const rootRouteChildren: RootRouteChildren = {
   PasswordRoute: PasswordRoute,
   SignupRoute: SignupRoute,
   SubscriptionRoute: SubscriptionRoute,
-  TrafficRoute: TrafficRoute,
+  TrafficRoute: TrafficRouteWithChildren,
   WelcomeRoute: WelcomeRoute,
 }
 export const routeTree = rootRouteImport
