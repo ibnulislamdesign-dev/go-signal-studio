@@ -6,6 +6,7 @@ export type Notification = {
   time: string;
   category: "AI Assistant" | "System Update" | "Billing" | "Customer";
   unread: boolean;
+  link?: { to: string; label: string };
 };
 
 export const NOTIFICATIONS: Notification[] = [
@@ -17,6 +18,7 @@ export const NOTIFICATIONS: Notification[] = [
     time: "Today · 8:02 AM",
     category: "AI Assistant",
     unread: true,
+    link: { to: "/dashboard", label: "Open dashboard" },
   },
   {
     id: "n2",
@@ -26,6 +28,7 @@ export const NOTIFICATIONS: Notification[] = [
     time: "Today · 7:15 AM",
     category: "System Update",
     unread: true,
+    link: { to: "/profile", label: "Open profile" },
   },
   {
     id: "n3",
@@ -35,6 +38,7 @@ export const NOTIFICATIONS: Notification[] = [
     time: "Today · 6:48 AM",
     category: "Customer",
     unread: true,
+    link: { to: "/traffic/l3", label: "View conversation" },
   },
   {
     id: "n4",
@@ -44,6 +48,7 @@ export const NOTIFICATIONS: Notification[] = [
     time: "Yesterday · 9:30 PM",
     category: "Billing",
     unread: false,
+    link: { to: "/subscription", label: "Manage subscription" },
   },
   {
     id: "n5",
@@ -53,6 +58,7 @@ export const NOTIFICATIONS: Notification[] = [
     time: "Yesterday · 4:12 PM",
     category: "AI Assistant",
     unread: false,
+    link: { to: "/traffic/l4", label: "Open traffic log" },
   },
   {
     id: "n6",
@@ -62,5 +68,6 @@ export const NOTIFICATIONS: Notification[] = [
     time: "Mon · 8:00 AM",
     category: "AI Assistant",
     unread: false,
+    link: { to: "/traffic", label: "View all traffic" },
   },
 ];
