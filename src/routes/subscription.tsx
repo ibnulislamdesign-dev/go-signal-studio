@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { MobileShell, StatusBar, HomeIndicator } from "@/components/MobileShell";
-import { ChevronLeft, Sparkles, Clock, Check, ShieldCheck } from "lucide-react";
+import { ChevronLeft, Sparkles, Clock, Check, ShieldCheck, CreditCard, Building2, Copy, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/subscription")({
   head: () => ({
@@ -123,6 +123,10 @@ function Subscription() {
           Renew Now · {plan === "annual" ? "₦75,000/yr" : "₦7,500/mo"}
         </button>
 
+        {/* Checkout */}
+        <h3 className="mt-8 text-sm font-bold text-[var(--brand-forest)]">Checkout</h3>
+        <Checkout amountLabel={plan === "annual" ? "₦75,000" : "₦7,500"} />
+
         <button
           type="button"
           className="mt-5 w-full text-center text-[11px] font-medium text-red-500/80 hover:text-red-600 transition-premium"
@@ -186,5 +190,178 @@ function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void 
         }`}
       />
     </button>
+  );
+}
+
+function Checkout({ amountLabel }: { amountLabel: string }) {
+  const [tab, setTab] = useState<"card" | "transfer">("card");
+  return (
+    <div className="mt-3 rounded-2xl glass border border-white/40 p-2 shadow-[var(--shadow-card)]">
+      <div className="grid grid-cols-2 p-1 rounded-xl bg-[var(--brand-forest)]/5 text-xs font-bold">
+        <button
+          onClick={() => setTab("card")}
+          className={`flex items-center justify-center gap-1.5 py-2 rounded-lg transition-premium ${
+            tab === "card" ? "bg-white text-[var(--brand-forest)] shadow-sm" : "text-[var(--brand-forest)]/60"
+          }`}
+        >
+          <CreditCard className="w-3.5 h-3.5" /> Card
+        </button>
+        <button
+          onClick={() => setTab("transfer")}
+          className={`flex items-center justify-center gap-1.5 py-2 rounded-lg transition-premium ${
+            tab === "transfer" ? "bg-white text-[var(--brand-forest)] shadow-sm" : "text-[var(--brand-forest)]/60"
+          }`}
+        >
+          <Building2 className="w-3.5 h-3.5" /> Bank transfer
+        </button>
+      </div>
+      <div className="p-3 animate-fade-up">{tab === "card" ? <CardForm amountLabel={amountLabel} /> : <TransferPanel amountLabel={amountLabel} />}</div>
+    </div>
+  );
+}
+
+function detectBrand(num: string): { name: string; cls: string } {
+  const n = num.replace(/\s/g, "");
+  if (/^4/.test(n)) return { name: "VISA", cls: "bg-[#1a1f71] text-white" };
+  if (/^(5[1-5]|2[2-7])/.test(n)) return { name: "MC", cls: "bg-gradient-to-r from-[#eb001b] to-[#f79e1b] text-white" };
+  if (/^3[47]/.test(n)) return { name: "AMEX", cls: "bg-[#2e77bb] text-white" };
+  if (/^(506|507|6500)/.test(n)) return { name: "VERVE", cls: "bg-[#004d40] text-white" };
+  return { name: "CARD", cls: "bg-[var(--brand-forest)]/10 text-[var(--brand-forest)]" };
+}
+
+function CardForm({ amountLabel }: { amountLabel: string }) {
+  const [num, setNum] = useState("");
+  const [exp, setExp] = useState("");
+  const [cvc, setCvc] = useState("");
+  const [name, setName] = useState("");
+  const brand = detectBrand(num);
+  const expValid = /^(0[1-9]|1[0-2])\/(\d{2})$/.test(exp);
+  const expError = exp.length === 5 && !expValid;
+
+  const formatNum = (v: string) =>
+    v.replace(/\D/g, "").slice(0, 19).replace(/(.{4})/g, "$1 ").trim();
+  const formatExp = (v: string) => {
+    const d = v.replace(/\D/g, "").slice(0, 4);
+    return d.length > 2 ? `${d.slice(0, 2)}/${d.slice(2)}` : d;
+  };
+
+  return (
+    <div className="space-y-3">
+      <label className="block">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-[var(--brand-forest)]/55">Card number</span>
+        <div className="mt-1 relative">
+          <input
+            inputMode="numeric"
+            value={num}
+            onChange={(e) => setNum(formatNum(e.target.value))}
+            placeholder="1234 5678 9012 3456"
+            className="w-full h-12 rounded-xl bg-white border border-[var(--brand-forest)]/10 pl-3 pr-16 text-sm font-mono text-[var(--brand-forest)] outline-none focus:border-[var(--brand-lime)] focus:ring-4 focus:ring-[var(--brand-lime)]/15 transition-premium"
+          />
+          <span className={`absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-extrabold px-2 py-1 rounded ${brand.cls}`}>
+            {brand.name}
+          </span>
+        </div>
+      </label>
+      <div className="grid grid-cols-2 gap-2">
+        <label className="block">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-[var(--brand-forest)]/55">Expiry</span>
+          <input
+            inputMode="numeric"
+            value={exp}
+            onChange={(e) => setExp(formatExp(e.target.value))}
+            placeholder="MM/YY"
+            className={`mt-1 w-full h-12 rounded-xl bg-white border px-3 text-sm font-mono outline-none focus:ring-4 transition-premium ${
+              expError
+                ? "border-red-400 focus:border-red-500 focus:ring-red-200 text-red-600"
+                : "border-[var(--brand-forest)]/10 focus:border-[var(--brand-lime)] focus:ring-[var(--brand-lime)]/15 text-[var(--brand-forest)]"
+            }`}
+          />
+          {expError && <span className="text-[10px] text-red-500 font-semibold">Invalid expiry</span>}
+        </label>
+        <label className="block">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-[var(--brand-forest)]/55">CVC</span>
+          <input
+            inputMode="numeric"
+            value={cvc}
+            onChange={(e) => setCvc(e.target.value.replace(/\D/g, "").slice(0, 4))}
+            placeholder="123"
+            className="mt-1 w-full h-12 rounded-xl bg-white border border-[var(--brand-forest)]/10 px-3 text-sm font-mono text-[var(--brand-forest)] outline-none focus:border-[var(--brand-lime)] focus:ring-4 focus:ring-[var(--brand-lime)]/15 transition-premium"
+          />
+        </label>
+      </div>
+      <label className="block">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-[var(--brand-forest)]/55">Name on card</span>
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="JOHN ADEKUNLE"
+          className="mt-1 w-full h-12 rounded-xl bg-white border border-[var(--brand-forest)]/10 px-3 text-sm text-[var(--brand-forest)] outline-none focus:border-[var(--brand-lime)] focus:ring-4 focus:ring-[var(--brand-lime)]/15 transition-premium uppercase"
+        />
+      </label>
+      <button
+        type="button"
+        className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--brand-lime)] text-white font-semibold py-3.5 shadow-[0_10px_24px_-10px_rgba(139,195,74,0.7)] transition-premium hover:translate-y-[-1px] active:scale-[0.99]"
+      >
+        <ShieldCheck className="w-4 h-4" /> Pay {amountLabel} securely
+      </button>
+    </div>
+  );
+}
+
+function TransferPanel({ amountLabel }: { amountLabel: string }) {
+  const [copied, setCopied] = useState<string | null>(null);
+  const [verifying, setVerifying] = useState<"idle" | "loading" | "done">("idle");
+  const fields = [
+    { label: "Bank", value: "Guaranty Trust Bank (GTB)" },
+    { label: "Account number", value: "0123456789" },
+    { label: "Account name", value: "Go Signal Technologies Ltd" },
+    { label: "Sort / Routing", value: "058152036" },
+  ];
+  const copy = async (v: string, label: string) => {
+    try {
+      await navigator.clipboard.writeText(v);
+      setCopied(label);
+      setTimeout(() => setCopied(null), 1400);
+    } catch {}
+  };
+  return (
+    <div className="space-y-2.5">
+      <div className="text-[11px] text-[var(--brand-forest)]/65">
+        Transfer exactly <span className="font-bold text-[var(--brand-forest)]">{amountLabel}</span> to the account below. Verification is automatic.
+      </div>
+      <ul className="space-y-2">
+        {fields.map((f) => (
+          <li key={f.label} className="flex items-center justify-between bg-white border border-[var(--brand-forest)]/10 rounded-xl px-3 py-2.5">
+            <div className="min-w-0">
+              <div className="text-[10px] uppercase tracking-wider font-semibold text-[var(--brand-forest)]/50">{f.label}</div>
+              <div className="text-sm font-mono font-bold text-[var(--brand-forest)] truncate">{f.value}</div>
+            </div>
+            <button
+              type="button"
+              onClick={() => copy(f.value, f.label)}
+              className="ml-2 inline-flex items-center gap-1 text-[11px] font-semibold text-[var(--brand-lime)] hover:text-[#5a8a2a] transition-premium"
+            >
+              <Copy className="w-3.5 h-3.5" />
+              {copied === f.label ? "Copied" : "Copy"}
+            </button>
+          </li>
+        ))}
+      </ul>
+      <button
+        type="button"
+        disabled={verifying === "loading"}
+        onClick={() => {
+          setVerifying("loading");
+          setTimeout(() => setVerifying("done"), 1800);
+        }}
+        className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--brand-forest)] text-white font-semibold py-3.5 shadow-[0_10px_24px_-10px_rgba(0,77,64,0.55)] transition-premium hover:translate-y-[-1px] active:scale-[0.99] disabled:opacity-80"
+      >
+        {verifying === "loading" && <Loader2 className="w-4 h-4 animate-spin" />}
+        {verifying === "done" && <Check className="w-4 h-4" />}
+        {verifying === "idle" && "I've sent the transfer — verify"}
+        {verifying === "loading" && "Verifying transfer…"}
+        {verifying === "done" && "Payment verified"}
+      </button>
+    </div>
   );
 }

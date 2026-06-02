@@ -13,6 +13,7 @@ import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as TrafficRouteImport } from './routes/traffic'
 import { Route as SubscriptionRouteImport } from './routes/subscription'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PasswordRouteImport } from './routes/password'
 import { Route as OtpRouteImport } from './routes/otp'
 import { Route as NotificationsRouteImport } from './routes/notifications'
@@ -21,6 +22,7 @@ import { Route as CongratulationsRouteImport } from './routes/congratulations'
 import { Route as BusinessInfoRouteImport } from './routes/business-info'
 import { Route as BusinessCategoryRouteImport } from './routes/business-category'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TrafficIdRouteImport } from './routes/traffic.$id'
 import { Route as NotificationsIdRouteImport } from './routes/notifications.$id'
 
 const WelcomeRoute = WelcomeRouteImport.update({
@@ -41,6 +43,11 @@ const SubscriptionRoute = SubscriptionRouteImport.update({
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PasswordRoute = PasswordRouteImport.update({
@@ -83,6 +90,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TrafficIdRoute = TrafficIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => TrafficRoute,
+} as any)
 const NotificationsIdRoute = NotificationsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -98,11 +110,13 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof NotificationsRouteWithChildren
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
+  '/profile': typeof ProfileRoute
   '/signup': typeof SignupRoute
   '/subscription': typeof SubscriptionRoute
-  '/traffic': typeof TrafficRoute
+  '/traffic': typeof TrafficRouteWithChildren
   '/welcome': typeof WelcomeRoute
   '/notifications/$id': typeof NotificationsIdRoute
+  '/traffic/$id': typeof TrafficIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -113,11 +127,13 @@ export interface FileRoutesByTo {
   '/notifications': typeof NotificationsRouteWithChildren
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
+  '/profile': typeof ProfileRoute
   '/signup': typeof SignupRoute
   '/subscription': typeof SubscriptionRoute
-  '/traffic': typeof TrafficRoute
+  '/traffic': typeof TrafficRouteWithChildren
   '/welcome': typeof WelcomeRoute
   '/notifications/$id': typeof NotificationsIdRoute
+  '/traffic/$id': typeof TrafficIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -129,11 +145,13 @@ export interface FileRoutesById {
   '/notifications': typeof NotificationsRouteWithChildren
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
+  '/profile': typeof ProfileRoute
   '/signup': typeof SignupRoute
   '/subscription': typeof SubscriptionRoute
-  '/traffic': typeof TrafficRoute
+  '/traffic': typeof TrafficRouteWithChildren
   '/welcome': typeof WelcomeRoute
   '/notifications/$id': typeof NotificationsIdRoute
+  '/traffic/$id': typeof TrafficIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -146,11 +164,13 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/otp'
     | '/password'
+    | '/profile'
     | '/signup'
     | '/subscription'
     | '/traffic'
     | '/welcome'
     | '/notifications/$id'
+    | '/traffic/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -161,11 +181,13 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/otp'
     | '/password'
+    | '/profile'
     | '/signup'
     | '/subscription'
     | '/traffic'
     | '/welcome'
     | '/notifications/$id'
+    | '/traffic/$id'
   id:
     | '__root__'
     | '/'
@@ -176,11 +198,13 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/otp'
     | '/password'
+    | '/profile'
     | '/signup'
     | '/subscription'
     | '/traffic'
     | '/welcome'
     | '/notifications/$id'
+    | '/traffic/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -192,9 +216,10 @@ export interface RootRouteChildren {
   NotificationsRoute: typeof NotificationsRouteWithChildren
   OtpRoute: typeof OtpRoute
   PasswordRoute: typeof PasswordRoute
+  ProfileRoute: typeof ProfileRoute
   SignupRoute: typeof SignupRoute
   SubscriptionRoute: typeof SubscriptionRoute
-  TrafficRoute: typeof TrafficRoute
+  TrafficRoute: typeof TrafficRouteWithChildren
   WelcomeRoute: typeof WelcomeRoute
 }
 
@@ -226,6 +251,13 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/password': {
@@ -284,6 +316,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/traffic/$id': {
+      id: '/traffic/$id'
+      path: '/$id'
+      fullPath: '/traffic/$id'
+      preLoaderRoute: typeof TrafficIdRouteImport
+      parentRoute: typeof TrafficRoute
+    }
     '/notifications/$id': {
       id: '/notifications/$id'
       path: '/$id'
@@ -306,6 +345,17 @@ const NotificationsRouteWithChildren = NotificationsRoute._addFileChildren(
   NotificationsRouteChildren,
 )
 
+interface TrafficRouteChildren {
+  TrafficIdRoute: typeof TrafficIdRoute
+}
+
+const TrafficRouteChildren: TrafficRouteChildren = {
+  TrafficIdRoute: TrafficIdRoute,
+}
+
+const TrafficRouteWithChildren =
+  TrafficRoute._addFileChildren(TrafficRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BusinessCategoryRoute: BusinessCategoryRoute,
@@ -315,9 +365,10 @@ const rootRouteChildren: RootRouteChildren = {
   NotificationsRoute: NotificationsRouteWithChildren,
   OtpRoute: OtpRoute,
   PasswordRoute: PasswordRoute,
+  ProfileRoute: ProfileRoute,
   SignupRoute: SignupRoute,
   SubscriptionRoute: SubscriptionRoute,
-  TrafficRoute: TrafficRoute,
+  TrafficRoute: TrafficRouteWithChildren,
   WelcomeRoute: WelcomeRoute,
 }
 export const routeTree = rootRouteImport

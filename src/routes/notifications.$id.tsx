@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { MobileShell, StatusBar, HomeIndicator } from "@/components/MobileShell";
-import { ChevronLeft, Check, CheckCircle2 } from "lucide-react";
+import { ChevronLeft, Check, CheckCircle2, ArrowUpRight } from "lucide-react";
 import { NOTIFICATIONS } from "@/lib/notifications";
 
 export const Route = createFileRoute("/notifications/$id")({
@@ -91,6 +91,15 @@ function SingleMessage() {
             </>
           )}
         </button>
+
+        {n.link && (
+          <Link
+            to={n.link.to as never}
+            className="mt-3 w-full inline-flex items-center justify-center gap-2 rounded-2xl py-3.5 font-semibold text-[var(--brand-forest)] bg-white border border-[var(--brand-forest)]/10 transition-premium hover:border-[var(--brand-lime)] hover:translate-y-[-1px]"
+          >
+            {n.link.label} <ArrowUpRight className="w-4 h-4" />
+          </Link>
+        )}
 
         <Link
           to="/notifications"

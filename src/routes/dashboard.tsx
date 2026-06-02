@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { MobileShell, StatusBar, HomeIndicator } from "@/components/MobileShell";
-import { Bell, ChevronDown, Home, Phone, MessageCircle, PhoneCall } from "lucide-react";
+import { Bell, ChevronDown, Home, Phone, MessageCircle, PhoneCall, AlertTriangle, Sparkles, Clock } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid } from "recharts";
 import logo from "@/assets/go-signal-logo.png";
 
@@ -21,6 +22,7 @@ const chartData = [
 ];
 
 function Dashboard() {
+  const [alertMode, setAlertMode] = useState<"trial" | "api" | "lead">("trial");
   return (
     <MobileShell>
       <StatusBar />
@@ -46,23 +48,23 @@ function Dashboard() {
 
         <h1 className="mt-5 text-lg font-bold text-[var(--brand-forest)]">Welcome back, John</h1>
 
-        {/* Trial card */}
-        <Link
-          to="/subscription"
-          className="mt-3 block rounded-2xl p-4 bg-gradient-to-br from-[var(--brand-lime)] to-[#7cb342] text-white shadow-[0_12px_32px_-12px_rgba(139,195,74,0.7)] transition-premium hover:translate-y-[-1px] active:scale-[0.99]"
-        >
-          <div className="flex items-start justify-between">
-            <div>
-              <div className="text-base font-bold">Complete your setup</div>
-              <p className="mt-1 text-xs text-white/90 leading-relaxed max-w-[230px]">
-                Your 14-day free trial ends on June 13th. Subscribe now to keep your AI assistant active!
-              </p>
-            </div>
-            <span className="inline-flex items-center gap-1 text-xs font-semibold whitespace-nowrap">
-              manage <ChevronDown className="w-3 h-3" />
-            </span>
-          </div>
-        </Link>
+        {/* Smart alert (dynamic) */}
+        <SmartAlert mode={alertMode} />
+
+        {/* Demo mode toggle for the alert */}
+        <div className="mt-2 inline-flex p-1 rounded-full bg-[var(--brand-forest)]/5 text-[10px] font-semibold">
+          {(["trial", "api", "lead"] as const).map((m) => (
+            <button
+              key={m}
+              onClick={() => setAlertMode(m)}
+              className={`px-2.5 py-1 rounded-full transition-premium ${
+                alertMode === m ? "bg-white text-[var(--brand-forest)] shadow-sm" : "text-[var(--brand-forest)]/50"
+              }`}
+            >
+              {m === "trial" ? "Trial" : m === "api" ? "API" : "Lead"}
+            </button>
+          ))}
+        </div>
 
         {/* Live traffic card */}
         <div className="mt-3 rounded-2xl glass p-4 shadow-[var(--shadow-card)]">
@@ -75,10 +77,10 @@ function Dashboard() {
               view all <ChevronDown className="w-3 h-3" />
             </Link>
           </div>
-          <ul className="mt-3 space-y-3">
-            <TrafficRow icon={<PhoneCall className="w-4 h-4" />} label="Ongoing: 2m 11s" detail="09040728892 › Call: Order 2 Shadda Fabric (Pending)" />
-            <TrafficRow icon={<MessageCircle className="w-4 h-4" />} label="WhatsApp: 5m ago" detail="07033445566 › Booked: Consultation (Unread)" />
-            <TrafficRow icon={<Phone className="w-4 h-4" />} label="Logged: 15m ago" detail="08098765432 › Query: Shea Butter Stock (Closed)" />
+          <ul className="mt-3 space-y-1.5">
+            <TrafficRow to="l1" icon={<PhoneCall className="w-4 h-4" />} label="Ongoing: 2m 11s" detail="09040728892 › Call: Order 2 Shadda Fabric (Pending)" />
+            <TrafficRow to="l3" icon={<MessageCircle className="w-4 h-4" />} label="WhatsApp: 5m ago" detail="07033445566 › Booked: Consultation (Unread)" />
+            <TrafficRow to="l4" icon={<Phone className="w-4 h-4" />} label="Logged: 15m ago" detail="08098765432 › Query: Shea Butter Stock (Closed)" />
           </ul>
         </div>
 
@@ -116,9 +118,9 @@ function Dashboard() {
             <Link to="/dashboard" className="text-[var(--brand-lime)] transition-premium hover:scale-110">
               <Home className="w-7 h-7" strokeWidth={2.5} />
             </Link>
-            <button className="w-10 h-10 rounded-full bg-[var(--brand-forest)]/10 overflow-hidden transition-premium hover:scale-110">
+            <Link to="/profile" aria-label="Profile" className="w-10 h-10 rounded-full ring-2 ring-transparent hover:ring-[var(--brand-lime)] overflow-hidden transition-premium hover:scale-110">
               <div className="w-full h-full bg-gradient-to-br from-amber-200 to-amber-500" />
-            </button>
+            </Link>
           </div>
         </div>
         <HomeIndicator />
@@ -127,16 +129,86 @@ function Dashboard() {
   );
 }
 
-function TrafficRow({ icon, label, detail }: { icon: React.ReactNode; label: string; detail: string }) {
+function TrafficRow({ icon, label, detail, to }: { icon: React.ReactNode; label: string; detail: string; to: string }) {
   return (
-    <li className="flex items-start gap-3">
-      <div className="mt-0.5 w-8 h-8 rounded-full bg-[var(--brand-forest)]/5 text-[var(--brand-forest)] inline-flex items-center justify-center">
-        {icon}
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="text-sm font-bold text-[var(--brand-forest)]">{label}</div>
-        <div className="text-xs text-[var(--brand-forest)]/70 truncate">{detail}</div>
-      </div>
+    <li>
+      <Link
+        to="/traffic/$id"
+        params={{ id: to }}
+        className="flex items-start gap-3 p-2 -mx-2 rounded-xl transition-premium hover:bg-white/70"
+      >
+        <div className="mt-0.5 w-8 h-8 rounded-full bg-[var(--brand-forest)]/5 text-[var(--brand-forest)] inline-flex items-center justify-center">
+          {icon}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-sm font-bold text-[var(--brand-forest)]">{label}</div>
+          <div className="text-xs text-[var(--brand-forest)]/70 truncate">{detail}</div>
+        </div>
+      </Link>
     </li>
+  );
+}
+
+function SmartAlert({ mode }: { mode: "trial" | "api" | "lead" }) {
+  if (mode === "api") {
+    return (
+      <Link
+        to="/profile"
+        className="mt-3 block rounded-2xl p-4 bg-white border-2 border-red-400/60 shadow-[0_10px_28px_-12px_rgba(239,68,68,0.35)] transition-premium hover:translate-y-[-1px]"
+      >
+        <div className="flex items-start gap-3">
+          <div className="w-9 h-9 rounded-xl bg-red-500/10 text-red-500 inline-flex items-center justify-center">
+            <AlertTriangle className="w-5 h-5" />
+          </div>
+          <div className="flex-1">
+            <div className="text-sm font-extrabold text-red-600">System API disconnected</div>
+            <p className="mt-0.5 text-xs text-[var(--brand-forest)]/70 leading-relaxed">
+              WhatsApp Business sync paused. Try: reconnect in Platform Sync, then refresh.
+            </p>
+            <span className="mt-1 inline-block text-[11px] font-bold text-red-500">Troubleshoot →</span>
+          </div>
+        </div>
+      </Link>
+    );
+  }
+  if (mode === "lead") {
+    return (
+      <Link
+        to="/traffic"
+        className="mt-3 block rounded-2xl p-4 bg-[var(--brand-forest)] text-white shadow-[0_12px_32px_-12px_rgba(0,77,64,0.7)] transition-premium hover:translate-y-[-1px]"
+      >
+        <div className="flex items-start gap-3">
+          <div className="w-9 h-9 rounded-xl bg-[var(--brand-lime)]/25 text-[var(--brand-lime)] inline-flex items-center justify-center">
+            <Sparkles className="w-5 h-5" />
+          </div>
+          <div className="flex-1">
+            <div className="text-sm font-extrabold">3 leads captured today 🎉</div>
+            <p className="mt-0.5 text-xs text-white/85 leading-relaxed">
+              +₦42,500 in confirmed orders. Tap to view today's traffic feed.
+            </p>
+          </div>
+          <ChevronDown className="w-4 h-4 -rotate-90 mt-1" />
+        </div>
+      </Link>
+    );
+  }
+  return (
+    <Link
+      to="/subscription"
+      className="mt-3 block rounded-2xl p-4 bg-gradient-to-br from-[var(--brand-lime)] to-[#7cb342] text-white shadow-[0_14px_36px_-12px_rgba(139,195,74,0.8)] transition-premium hover:translate-y-[-1px] active:scale-[0.99]"
+    >
+      <div className="flex items-start gap-3">
+        <div className="w-9 h-9 rounded-xl bg-white/20 inline-flex items-center justify-center">
+          <Clock className="w-5 h-5" />
+        </div>
+        <div className="flex-1">
+          <div className="text-sm font-extrabold">Complete your setup</div>
+          <p className="mt-0.5 text-xs text-white/90 leading-relaxed">
+            Your 14-day free trial ends June 13th. Subscribe to keep your AI assistant active.
+          </p>
+        </div>
+        <ChevronDown className="w-4 h-4 -rotate-90 mt-1" />
+      </div>
+    </Link>
   );
 }
