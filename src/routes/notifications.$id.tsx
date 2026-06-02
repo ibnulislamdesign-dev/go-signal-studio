@@ -94,7 +94,7 @@ function SingleMessage() {
 
         {n.link && (
           <Link
-            to={n.link.to}
+            to={n.link.to as never}
             className="mt-3 w-full inline-flex items-center justify-center gap-2 rounded-2xl py-3.5 font-semibold text-[var(--brand-forest)] bg-white border border-[var(--brand-forest)]/10 transition-premium hover:border-[var(--brand-lime)] hover:translate-y-[-1px]"
           >
             {n.link.label} <ArrowUpRight className="w-4 h-4" />
