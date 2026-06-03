@@ -77,4 +77,15 @@ export const NOTIFICATIONS: Notification[] = [
     priority: "low",
     link: { to: "/traffic", label: "View all traffic" },
   },
+  {
+    id: "n7",
+    title: "System API disconnected",
+    preview: "WhatsApp Business sync paused — reconnect required.",
+    body: "Your WhatsApp Business API connection was interrupted at 7:42 AM. New inbound messages are temporarily queued and your AI assistant cannot reply on that channel until the integration is reconnected. Open Profile › Platform Sync to re-authenticate the integration in one tap.",
+    time: "Today · 7:42 AM",
+    category: "System Update",
+    unread: true,
+    priority: "high",
+    link: { to: "/profile", label: "Reconnect WhatsApp" },
+  },
 ];
