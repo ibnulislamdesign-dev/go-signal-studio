@@ -5,6 +5,7 @@ export type Notification = {
   body: string;
   time: string;
   category: "AI Assistant" | "System Update" | "Billing" | "Customer";
+  priority: "high" | "medium" | "low";
   unread: boolean;
   link?: { to: string; label: string };
 };
@@ -18,6 +19,7 @@ export const NOTIFICATIONS: Notification[] = [
     time: "Today · 8:02 AM",
     category: "AI Assistant",
     unread: true,
+    priority: "medium",
     link: { to: "/dashboard", label: "Open dashboard" },
   },
   {
@@ -28,6 +30,7 @@ export const NOTIFICATIONS: Notification[] = [
     time: "Today · 7:15 AM",
     category: "System Update",
     unread: true,
+    priority: "low",
     link: { to: "/profile", label: "Open profile" },
   },
   {
@@ -38,6 +41,7 @@ export const NOTIFICATIONS: Notification[] = [
     time: "Today · 6:48 AM",
     category: "Customer",
     unread: true,
+    priority: "high",
     link: { to: "/traffic/l3", label: "View conversation" },
   },
   {
@@ -48,6 +52,7 @@ export const NOTIFICATIONS: Notification[] = [
     time: "Yesterday · 9:30 PM",
     category: "Billing",
     unread: false,
+    priority: "high",
     link: { to: "/subscription", label: "Manage subscription" },
   },
   {
@@ -58,6 +63,7 @@ export const NOTIFICATIONS: Notification[] = [
     time: "Yesterday · 4:12 PM",
     category: "AI Assistant",
     unread: false,
+    priority: "medium",
     link: { to: "/traffic/l4", label: "Open traffic log" },
   },
   {
@@ -68,6 +74,7 @@ export const NOTIFICATIONS: Notification[] = [
     time: "Mon · 8:00 AM",
     category: "AI Assistant",
     unread: false,
+    priority: "low",
     link: { to: "/traffic", label: "View all traffic" },
   },
 ];
