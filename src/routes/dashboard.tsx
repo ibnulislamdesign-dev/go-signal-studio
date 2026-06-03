@@ -153,7 +153,8 @@ function SmartAlert({ mode }: { mode: "trial" | "api" | "lead" }) {
   if (mode === "api") {
     return (
       <Link
-        to="/profile"
+        to="/notifications/$id"
+        params={{ id: "n7" }}
         className="mt-3 block rounded-2xl p-4 bg-white border-2 border-red-400/60 shadow-[0_10px_28px_-12px_rgba(239,68,68,0.35)] transition-premium hover:translate-y-[-1px]"
       >
         <div className="flex items-start gap-3">
@@ -174,7 +175,8 @@ function SmartAlert({ mode }: { mode: "trial" | "api" | "lead" }) {
   if (mode === "lead") {
     return (
       <Link
-        to="/traffic"
+        to="/notifications/$id"
+        params={{ id: "n3" }}
         className="mt-3 block rounded-2xl p-4 bg-[var(--brand-forest)] text-white shadow-[0_12px_32px_-12px_rgba(0,77,64,0.7)] transition-premium hover:translate-y-[-1px]"
       >
         <div className="flex items-start gap-3">
@@ -194,7 +196,8 @@ function SmartAlert({ mode }: { mode: "trial" | "api" | "lead" }) {
   }
   return (
     <Link
-      to="/subscription"
+      to="/notifications/$id"
+      params={{ id: "n4" }}
       className="mt-3 block rounded-2xl p-4 bg-gradient-to-br from-[var(--brand-lime)] to-[#7cb342] text-white shadow-[0_14px_36px_-12px_rgba(139,195,74,0.8)] transition-premium hover:translate-y-[-1px] active:scale-[0.99]"
     >
       <div className="flex items-start gap-3">
