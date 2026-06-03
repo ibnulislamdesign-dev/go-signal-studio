@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { MobileShell, StatusBar, HomeIndicator } from "@/components/MobileShell";
-import { ChevronLeft, Check, CheckCircle2, ArrowUpRight } from "lucide-react";
+import { ChevronLeft, Check, CheckCircle2, ArrowUpRight, Clock, AlertTriangle, Info, Flame } from "lucide-react";
 import { NOTIFICATIONS } from "@/lib/notifications";
 
 export const Route = createFileRoute("/notifications/$id")({
@@ -44,6 +44,14 @@ function SingleMessage() {
   const { n } = Route.useLoaderData();
   const [read, setRead] = useState(!n.unread);
 
+  const priorityStyles =
+    n.priority === "high"
+      ? { bg: "bg-red-500/10", text: "text-red-600", label: "High priority", Icon: Flame }
+      : n.priority === "medium"
+        ? { bg: "bg-amber-500/10", text: "text-amber-600", label: "Medium priority", Icon: AlertTriangle }
+        : { bg: "bg-[var(--brand-forest)]/5", text: "text-[var(--brand-forest)]/70", label: "Low priority", Icon: Info };
+  const PriorityIcon = priorityStyles.Icon;
+
   return (
     <MobileShell>
       <StatusBar />
@@ -60,15 +68,25 @@ function SingleMessage() {
         </div>
 
         <div className="mt-5 rounded-2xl glass border border-white/40 p-5 shadow-[var(--shadow-card)]">
-          <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-[var(--brand-lime)] bg-[var(--brand-lime)]/15 px-2.5 py-1 rounded-full">
-            {n.category}
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-[var(--brand-lime)] bg-[var(--brand-lime)]/15 px-2.5 py-1 rounded-full">
+              {n.category}
+            </span>
+            <span className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${priorityStyles.bg} ${priorityStyles.text}`}>
+              <PriorityIcon className="w-3 h-3" /> {priorityStyles.label}
+            </span>
+          </div>
           <h1 className="mt-3 text-xl font-extrabold text-[var(--brand-forest)] leading-snug">{n.title}</h1>
-          <p className="mt-1 text-xs text-[var(--brand-forest)]/50">{n.time}</p>
+          <p className="mt-1 inline-flex items-center gap-1 text-xs text-[var(--brand-forest)]/50">
+            <Clock className="w-3 h-3" /> {n.time}
+          </p>
 
           <div className="mt-5 h-px bg-[var(--brand-forest)]/10" />
 
-          <p className="mt-4 text-sm leading-relaxed text-[var(--brand-forest)]/85">{n.body}</p>
+          <div className="mt-4 space-y-3 text-sm leading-relaxed text-[var(--brand-forest)]/85">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--brand-forest)]/50">Event details</p>
+            <p>{n.body}</p>
+          </div>
         </div>
 
         <button
