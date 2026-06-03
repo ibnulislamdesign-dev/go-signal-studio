@@ -113,8 +113,8 @@
 }
 
 .dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
+  --background: oklch(0.18 0.02 165);
+  --foreground: oklch(0.96 0.01 120);
   --card: oklch(0.208 0.042 265.755);
   --card-foreground: oklch(0.984 0.003 247.858);
   --popover: oklch(0.208 0.042 265.755);
@@ -145,6 +145,15 @@
   --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
+
+  /* Brand overrides for dark mode */
+  --brand-forest: #e6f4ef;
+  --brand-forest-soft: #b9d8d0;
+  --canvas: #0c1715;
+  --surface: #132521;
+  --glass-bg: rgba(20, 35, 32, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --shadow-card: 0 4px 20px -6px rgba(0, 0, 0, 0.5);
 }
 
 @layer base {
