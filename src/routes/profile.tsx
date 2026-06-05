@@ -174,6 +174,13 @@ function Profile() {
   // password sheet
   const [pwdSheet, setPwdSheet] = useState<null | "change" | "forgot">(null);
 
+  // channels & integration
+  const [waModalOpen, setWaModalOpen] = useState(false);
+  const [waConnected, setWaConnected] = useState(false);
+  const [waPhone, setWaPhone] = useState({ dial: "+234", number: "9040728892" });
+  const [waVerifying, setWaVerifying] = useState(false);
+  const [waVerified, setWaVerified] = useState(false);
+
   const savePersonal = () => { setPersonal(personalDraft); setEditPersonal(false); };
   const cancelPersonal = () => { setPersonalDraft(personal); setEditPersonal(false); };
   const saveBusiness = () => { setBusiness(businessDraft); setEditBusiness(false); };
