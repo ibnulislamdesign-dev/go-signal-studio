@@ -1,12 +1,15 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MobileShell, StatusBar, HomeIndicator } from "@/components/MobileShell";
 import { ChevronLeft, Check, CheckCircle2, ArrowUpRight, Clock, AlertTriangle, Info, Flame } from "lucide-react";
-import { NOTIFICATIONS } from "@/lib/notifications";
+import { findNotification, markRead } from "@/lib/notifications";
 
 export const Route = createFileRoute("/notifications/$id")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    sheet: s.sheet === 1 || s.sheet === "1" ? 1 : undefined,
+  }),
   loader: ({ params }) => {
-    const n = NOTIFICATIONS.find((x) => x.id === params.id);
+    const n = findNotification(params.id);
     if (!n) throw notFound();
     return { n };
   },
@@ -42,7 +45,15 @@ export const Route = createFileRoute("/notifications/$id")({
 
 function SingleMessage() {
   const { n } = Route.useLoaderData();
+  const { sheet } = Route.useSearch();
   const [read, setRead] = useState(!n.unread);
+
+  useEffect(() => {
+    if (n.unread) {
+      markRead(n.id);
+      setRead(true);
+    }
+  }, [n.id, n.unread]);
 
   const priorityStyles =
     n.priority === "high"
@@ -55,7 +66,7 @@ function SingleMessage() {
   return (
     <MobileShell>
       <StatusBar />
-      <div className="px-5 pt-2 pb-10 animate-fade-up">
+      <div className={`px-5 pt-2 pb-10 ${sheet ? "animate-slide-up" : "animate-fade-up"}`}>
         <div className="flex items-center justify-between">
           <Link
             to="/notifications"
