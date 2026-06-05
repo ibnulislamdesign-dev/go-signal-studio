@@ -4,6 +4,7 @@ import { MobileShell, StatusBar, HomeIndicator } from "@/components/MobileShell"
 import { Bell, ChevronDown, Home, Phone, MessageCircle, PhoneCall, AlertTriangle, Sparkles, Clock } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid } from "recharts";
 import logo from "@/assets/go-signal-logo.png";
+import { useUnreadCount } from "@/lib/notifications";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -23,6 +24,7 @@ const chartData = [
 
 function Dashboard() {
   const [alertMode, setAlertMode] = useState<"trial" | "api" | "lead">("trial");
+  const unread = useUnreadCount();
   return (
     <MobileShell>
       <StatusBar />
@@ -42,7 +44,11 @@ function Dashboard() {
             aria-label="Notifications"
           >
             <Bell className="w-5 h-5 text-[var(--brand-forest)]" />
-            <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold inline-flex items-center justify-center">5</span>
+            {unread > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold inline-flex items-center justify-center transition-premium animate-fade-up">
+                {unread}
+              </span>
+            )}
           </Link>
         </div>
 
