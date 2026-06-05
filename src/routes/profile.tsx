@@ -774,3 +774,171 @@ function PwdField({ label, show, setShow }: { label: string; show: boolean; setS
     </div>
   );
 }
+
+/* ─── WhatsApp inline icon ─── */
+function WhatsAppIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.36-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+    </svg>
+  );
+}
+
+/* ─── WhatsApp Verification Modal ─── */
+function WhatsAppModal({
+  open,
+  onClose,
+  waConnected,
+  setWaConnected,
+  waPhone,
+  setWaPhone,
+}: {
+  open: boolean;
+  onClose: () => void;
+  waConnected: boolean;
+  setWaConnected: (v: boolean) => void;
+  waPhone: { dial: string; number: string };
+  setWaPhone: (v: { dial: string; number: string }) => void;
+}) {
+  const [step, setStep] = useState<"input" | "code">("input");
+  const [generating, setGenerating] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const accountId = "GS-7X9A2B";
+  const verificationMsg = `Verify my Go Signal account ${accountId}. I confirm this WhatsApp number belongs to me.`;
+
+  useEffect(() => {
+    if (open) setStep("input");
+  }, [open]);
+
+  const generate = () => {
+    setGenerating(true);
+    setTimeout(() => { setGenerating(false); setStep("code"); }, 1200);
+  };
+
+  const copyAndClose = () => {
+    navigator.clipboard?.writeText(verificationMsg);
+    setCopied(true);
+    setTimeout(() => {
+      setWaConnected(true);
+      onClose();
+      setCopied(false);
+    }, 800);
+  };
+
+  if (!open) return null;
+
+  return (
+    <div
+      className="absolute inset-0 z-50 flex items-end md:items-center justify-center bg-black/45 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-sm rounded-t-3xl md:rounded-3xl bg-[var(--surface)] p-5 pb-8 shadow-2xl border-t border-white/40 animate-fade-up"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-[var(--brand-forest)]/15" />
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#25D366]/10 text-[#25D366] inline-flex items-center justify-center">
+              <WhatsAppIcon className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="text-base font-extrabold text-[var(--brand-forest)]">
+                {waConnected ? "WhatsApp Connected" : "Link WhatsApp"}
+              </div>
+              <div className="text-[11px] text-[var(--brand-forest)]/60">
+                {waConnected ? "Your number is verified" : "Enter your WhatsApp number to verify"}
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="w-9 h-9 rounded-full hover:bg-[var(--brand-forest)]/5 inline-flex items-center justify-center"
+          >
+            <X className="w-5 h-5 text-[var(--brand-forest)]" />
+          </button>
+        </div>
+
+        {waConnected ? (
+          <div className="py-6 text-center space-y-3">
+            <div className="mx-auto w-14 h-14 rounded-full bg-[var(--brand-lime)]/15 inline-flex items-center justify-center">
+              <CheckCircle2 className="w-7 h-7 text-[var(--brand-lime)]" />
+            </div>
+            <div className="text-sm font-bold text-[var(--brand-forest)]">
+              WhatsApp Business is active
+            </div>
+            <div className="text-xs text-[var(--brand-forest)]/60">
+              {waPhone.dial} {waPhone.number}
+            </div>
+            <button
+              type="button"
+              onClick={() => setWaConnected(false)}
+              className="mt-2 text-xs font-semibold text-red-500 hover:text-red-600 transition-premium"
+            >
+              Disconnect account
+            </button>
+          </div>
+        ) : step === "input" ? (
+          <div className="space-y-4">
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-[var(--brand-forest)]/50 mb-1.5">
+                WhatsApp Phone Number
+              </div>
+              <PhoneInput
+                dial={waPhone.dial}
+                number={waPhone.number}
+                onChange={(v) => setWaPhone(v)}
+                placeholder="801 234 5678"
+              />
+            </div>
+            <button
+              type="button"
+              disabled={!waPhone.number || generating}
+              onClick={generate}
+              className="w-full h-12 rounded-xl bg-[var(--brand-forest)] text-white font-bold inline-flex items-center justify-center gap-2 transition-premium hover:bg-[#006053] disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Smartphone className="w-4 h-4" />}
+              Generate Verification Message
+            </button>
+            <p className="text-[11px] text-[var(--brand-forest)]/50 text-center leading-relaxed">
+              We'll create a pre-written verification string for your account.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="rounded-xl bg-[var(--canvas)] border border-[var(--brand-forest)]/10 p-4 space-y-2">
+              <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-[var(--brand-forest)]/50">
+                <Link2 className="w-3.5 h-3.5" />
+                Verification String
+              </div>
+              <p className="text-sm font-semibold text-[var(--brand-forest)] leading-relaxed">
+                {verificationMsg}
+              </p>
+              <div className="flex items-center gap-2 text-[11px] text-[var(--brand-forest)]/60">
+                <Info className="w-3.5 h-3.5 shrink-0" />
+                Copy this message and send it from the number you entered.
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={copyAndClose}
+              className="w-full h-12 rounded-xl bg-[var(--brand-lime)] text-white font-bold inline-flex items-center justify-center gap-2 transition-premium hover:bg-[#7cb342] shadow-[0_8px_24px_-8px_rgba(139,195,74,0.6)]"
+            >
+              {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              {copied ? "Copied! Verifying…" : "Copy & Mark as Sent"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setStep("input")}
+              className="w-full text-xs font-semibold text-[var(--brand-forest)]/60 hover:text-[var(--brand-forest)] transition-premium"
+            >
+              Back to number input
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
