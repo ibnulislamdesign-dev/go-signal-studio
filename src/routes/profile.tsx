@@ -523,6 +523,16 @@ function Profile() {
       {pwdSheet && (
         <PasswordSheet mode={pwdSheet} onClose={() => setPwdSheet(null)} />
       )}
+
+      {/* WhatsApp linking modal */}
+      <WhatsAppModal
+        open={waModalOpen}
+        onClose={() => setWaModalOpen(false)}
+        waConnected={waConnected}
+        setWaConnected={setWaConnected}
+        waPhone={waPhone}
+        setWaPhone={setWaPhone}
+      />
     </MobileShell>
   );
 }
