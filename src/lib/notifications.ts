@@ -1,3 +1,7 @@
+import { useSyncExternalStore } from "react";
+
+export type NotificationType = "chat" | "system" | "complaint" | "billing";
+
 export type Notification = {
   id: string;
   title: string;
@@ -7,10 +11,14 @@ export type Notification = {
   category: "AI Assistant" | "System Update" | "Billing" | "Customer";
   priority: "high" | "medium" | "low";
   unread: boolean;
+  type: NotificationType;
+  targetId: string;
+  /** Optional index of the specific message within a chat thread */
+  messageIndex?: number;
   link?: { to: string; label: string };
 };
 
-export const NOTIFICATIONS: Notification[] = [
+const INITIAL: Notification[] = [
   {
     id: "n1",
     title: "AI Assistant summary ready",
@@ -20,6 +28,8 @@ export const NOTIFICATIONS: Notification[] = [
     category: "AI Assistant",
     unread: true,
     priority: "medium",
+    type: "system",
+    targetId: "n1",
     link: { to: "/dashboard", label: "Open dashboard" },
   },
   {
@@ -31,6 +41,8 @@ export const NOTIFICATIONS: Notification[] = [
     category: "System Update",
     unread: true,
     priority: "low",
+    type: "system",
+    targetId: "n2",
     link: { to: "/profile", label: "Open profile" },
   },
   {
@@ -42,6 +54,9 @@ export const NOTIFICATIONS: Notification[] = [
     category: "Customer",
     unread: true,
     priority: "high",
+    type: "chat",
+    targetId: "l3",
+    messageIndex: 3,
     link: { to: "/traffic/l3", label: "View conversation" },
   },
   {
@@ -53,6 +68,8 @@ export const NOTIFICATIONS: Notification[] = [
     category: "Billing",
     unread: false,
     priority: "high",
+    type: "billing",
+    targetId: "n4",
     link: { to: "/subscription", label: "Manage subscription" },
   },
   {
@@ -64,6 +81,9 @@ export const NOTIFICATIONS: Notification[] = [
     category: "AI Assistant",
     unread: false,
     priority: "medium",
+    type: "chat",
+    targetId: "l4",
+    messageIndex: 1,
     link: { to: "/traffic/l4", label: "Open traffic log" },
   },
   {
@@ -75,6 +95,8 @@ export const NOTIFICATIONS: Notification[] = [
     category: "AI Assistant",
     unread: false,
     priority: "low",
+    type: "system",
+    targetId: "n6",
     link: { to: "/traffic", label: "View all traffic" },
   },
   {
@@ -86,6 +108,46 @@ export const NOTIFICATIONS: Notification[] = [
     category: "System Update",
     unread: true,
     priority: "high",
+    type: "complaint",
+    targetId: "n7",
     link: { to: "/profile", label: "Reconnect WhatsApp" },
   },
 ];
+
+let state: Notification[] = INITIAL.map((n) => ({ ...n }));
+const listeners = new Set<() => void>();
+const emit = () => listeners.forEach((l) => l());
+
+export const NOTIFICATIONS = state;
+
+function getSnapshot() {
+  return state;
+}
+function subscribe(l: () => void) {
+  listeners.add(l);
+  return () => listeners.delete(l);
+}
+
+export function markRead(id: string) {
+  let changed = false;
+  state = state.map((n) => {
+    if (n.id === id && n.unread) {
+      changed = true;
+      return { ...n, unread: false };
+    }
+    return n;
+  });
+  if (changed) emit();
+}
+
+export function findNotification(id: string) {
+  return state.find((n) => n.id === id);
+}
+
+export function useNotifications() {
+  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+}
+
+export function useUnreadCount() {
+  return useNotifications().filter((n) => n.unread).length;
+}
