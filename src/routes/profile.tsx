@@ -410,6 +410,66 @@ function Profile() {
             </button>
           </SectionCard>
 
+          {/* Channels & Integration */}
+          <SectionCard title="Channels & Integration" subtitle="Link your communication lines">
+            {/* WhatsApp Integration */}
+            <button
+              type="button"
+              onClick={() => setWaModalOpen(true)}
+              className="w-full flex items-center justify-between py-1 transition-premium hover:translate-x-0.5"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#25D366]/10 text-[#25D366] inline-flex items-center justify-center">
+                  <WhatsAppIcon className="w-5 h-5" />
+                </div>
+                <div className="text-left">
+                  <div className="text-sm font-bold text-[var(--brand-forest)]">WhatsApp Integration</div>
+                  <div className="text-[11px] text-[var(--brand-forest)]/60">Business messaging & catalog</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {waConnected ? (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[var(--brand-lime)] bg-[var(--brand-lime)]/15 px-2 py-1 rounded-full">
+                    <CheckCircle2 className="w-3 h-3" /> Connected
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-bold text-[var(--brand-forest)]/50 bg-[var(--brand-forest)]/5 px-2 py-1 rounded-full">
+                    Not Connected
+                  </span>
+                )}
+                <ChevronLeft className="w-4 h-4 rotate-180 text-[var(--brand-forest)]/40" />
+              </div>
+            </button>
+            <Divider />
+            {/* Inbound Voice Routing */}
+            <div className="rounded-xl bg-[var(--canvas)] border border-[var(--brand-forest)]/10 p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <PhoneCall className="w-4 h-4 text-[var(--brand-forest)]" />
+                <div className="text-sm font-bold text-[var(--brand-forest)]">Inbound Voice Routing</div>
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-xs font-semibold text-[var(--brand-forest)]/70">System Gateway Number</div>
+                  <div className="text-sm font-extrabold text-[var(--brand-forest)]">+234 700-GO-SIGNAL</div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => navigator.clipboard?.writeText("+2347004674453")}
+                  className="w-9 h-9 rounded-xl bg-[var(--surface)] border border-[var(--brand-forest)]/10 inline-flex items-center justify-center text-[var(--brand-forest)]/60 hover:text-[var(--brand-forest)] transition-premium"
+                  aria-label="Copy gateway number"
+                >
+                  <Copy className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="mt-2 flex items-start gap-2 rounded-lg bg-[var(--brand-forest)]/5 px-3 py-2">
+                <Info className="w-3.5 h-3.5 text-[var(--brand-forest)]/50 mt-0.5 shrink-0" />
+                <p className="text-[11px] text-[var(--brand-forest)]/60 leading-relaxed">
+                  Your incoming phone calls are automatically routed securely to your account profile using your registered mobile Caller ID mapping.
+                </p>
+              </div>
+            </div>
+          </SectionCard>
+
           {/* spacer so content can scroll above bottom nav */}
           <div className="h-24" />
         </div>
