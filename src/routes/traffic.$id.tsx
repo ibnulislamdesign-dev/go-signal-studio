@@ -158,13 +158,21 @@ function LiveTranscript({ seed }: { seed: TranscriptLine[] }) {
   );
 }
 
-function ChatThread({ lines }: { lines: TranscriptLine[] }) {
+function ChatThread({ lines, focusIndex }: { lines: TranscriptLine[]; focusIndex?: number }) {
+  useEffect(() => {
+    if (focusIndex === undefined) return;
+    const el = document.querySelector<HTMLElement>(`[data-msg="${focusIndex}"]`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.classList.add("animate-flash");
+    }
+  }, [focusIndex]);
   return (
     <div className="mt-4 space-y-2">
       {lines.map((l, i) => {
         const isAI = l.speaker === "AI";
         return (
-          <div key={i} className={`flex ${isAI ? "justify-start" : "justify-end"} animate-fade-up`} style={{ animationDelay: `${i * 40}ms` }}>
+          <div key={i} data-msg={i} className={`flex ${isAI ? "justify-start" : "justify-end"} animate-fade-up rounded-2xl`} style={{ animationDelay: `${i * 40}ms` }}>
             <div
               className={`max-w-[78%] px-3.5 py-2.5 text-sm leading-relaxed shadow-sm ${
                 isAI
