@@ -5,6 +5,11 @@ import { ChevronLeft, PhoneCall, MessageCircle, Mic, Phone } from "lucide-react"
 import { findTraffic, type TranscriptLine } from "@/lib/traffic";
 
 export const Route = createFileRoute("/traffic/$id")({
+  validateSearch: (s: Record<string, unknown>) => {
+    const raw = s.msg;
+    const n = typeof raw === "number" ? raw : typeof raw === "string" ? parseInt(raw, 10) : NaN;
+    return { msg: Number.isFinite(n) ? n : undefined };
+  },
   loader: ({ params }) => {
     const log = findTraffic(params.id);
     if (!log) throw notFound();
@@ -42,6 +47,7 @@ export const Route = createFileRoute("/traffic/$id")({
 
 function TrafficDetail() {
   const { log } = Route.useLoaderData();
+  const { msg } = Route.useSearch();
   return (
     <MobileShell>
       <StatusBar />
@@ -83,7 +89,11 @@ function TrafficDetail() {
           <p className="mt-3 text-xs text-[var(--brand-forest)]/70">{log.summary}</p>
         </div>
 
-        {log.live ? <LiveTranscript seed={log.transcript} /> : <ChatThread lines={log.transcript} />}
+        {log.live ? (
+          <LiveTranscript seed={log.transcript} />
+        ) : (
+          <ChatThread lines={log.transcript} focusIndex={msg} />
+        )}
       </div>
       <HomeIndicator />
     </MobileShell>
