@@ -5,6 +5,11 @@ import { ChevronLeft, PhoneCall, MessageCircle, Mic, Phone } from "lucide-react"
 import { findTraffic, type TranscriptLine } from "@/lib/traffic";
 
 export const Route = createFileRoute("/traffic/$id")({
+  validateSearch: (s: Record<string, unknown>) => {
+    const raw = s.msg;
+    const n = typeof raw === "number" ? raw : typeof raw === "string" ? parseInt(raw, 10) : NaN;
+    return { msg: Number.isFinite(n) ? n : undefined };
+  },
   loader: ({ params }) => {
     const log = findTraffic(params.id);
     if (!log) throw notFound();
@@ -42,6 +47,7 @@ export const Route = createFileRoute("/traffic/$id")({
 
 function TrafficDetail() {
   const { log } = Route.useLoaderData();
+  const { msg } = Route.useSearch();
   return (
     <MobileShell>
       <StatusBar />
@@ -83,7 +89,11 @@ function TrafficDetail() {
           <p className="mt-3 text-xs text-[var(--brand-forest)]/70">{log.summary}</p>
         </div>
 
-        {log.live ? <LiveTranscript seed={log.transcript} /> : <ChatThread lines={log.transcript} />}
+        {log.live ? (
+          <LiveTranscript seed={log.transcript} />
+        ) : (
+          <ChatThread lines={log.transcript} focusIndex={msg} />
+        )}
       </div>
       <HomeIndicator />
     </MobileShell>
@@ -148,13 +158,21 @@ function LiveTranscript({ seed }: { seed: TranscriptLine[] }) {
   );
 }
 
-function ChatThread({ lines }: { lines: TranscriptLine[] }) {
+function ChatThread({ lines, focusIndex }: { lines: TranscriptLine[]; focusIndex?: number }) {
+  useEffect(() => {
+    if (focusIndex === undefined) return;
+    const el = document.querySelector<HTMLElement>(`[data-msg="${focusIndex}"]`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.classList.add("animate-flash");
+    }
+  }, [focusIndex]);
   return (
     <div className="mt-4 space-y-2">
       {lines.map((l, i) => {
         const isAI = l.speaker === "AI";
         return (
-          <div key={i} className={`flex ${isAI ? "justify-start" : "justify-end"} animate-fade-up`} style={{ animationDelay: `${i * 40}ms` }}>
+          <div key={i} data-msg={i} className={`flex ${isAI ? "justify-start" : "justify-end"} animate-fade-up rounded-2xl`} style={{ animationDelay: `${i * 40}ms` }}>
             <div
               className={`max-w-[78%] px-3.5 py-2.5 text-sm leading-relaxed shadow-sm ${
                 isAI

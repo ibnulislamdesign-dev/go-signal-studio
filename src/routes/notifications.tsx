@@ -1,7 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { MobileShell, StatusBar, HomeIndicator } from "@/components/MobileShell";
 import { ChevronLeft, Bell, Sparkles, Settings, Wallet, MessageSquare } from "lucide-react";
-import { NOTIFICATIONS, type Notification } from "@/lib/notifications";
+import { useNotifications, useUnreadCount, markRead, type Notification } from "@/lib/notifications";
 
 export const Route = createFileRoute("/notifications")({
   head: () => ({
@@ -21,7 +21,36 @@ const ICONS: Record<Notification["category"], React.ReactNode> = {
 };
 
 function Notifications() {
-  const unreadCount = NOTIFICATIONS.filter((n) => n.unread).length;
+  const notifications = useNotifications();
+  const unreadCount = useUnreadCount();
+  const navigate = useNavigate();
+
+  const handleClick = (n: Notification) => {
+    markRead(n.id);
+    // Dynamic deep-link based on payload type
+    switch (n.type) {
+      case "chat":
+        navigate({
+          to: "/traffic/$id",
+          params: { id: n.targetId },
+          search: n.messageIndex !== undefined ? { msg: n.messageIndex } : {},
+        });
+        break;
+      case "billing":
+        navigate({ to: "/subscription" });
+        break;
+      case "system":
+      case "complaint":
+      default:
+        navigate({
+          to: "/notifications/$id",
+          params: { id: n.id },
+          search: { sheet: 1 },
+        });
+        break;
+    }
+  };
+
   return (
     <MobileShell>
       <StatusBar />
@@ -37,21 +66,29 @@ function Notifications() {
             <Bell className="w-4 h-4" />
             <span className="text-sm font-bold">Notifications</span>
           </div>
-          <span className="text-[10px] font-semibold text-[var(--brand-lime)] bg-[var(--brand-lime)]/15 px-2 py-0.5 rounded-full">
-            {unreadCount} new
-          </span>
+          {unreadCount > 0 ? (
+            <span className="text-[10px] font-semibold text-[var(--brand-lime)] bg-[var(--brand-lime)]/15 px-2 py-0.5 rounded-full transition-premium">
+              {unreadCount} new
+            </span>
+          ) : (
+            <span className="w-9" />
+          )}
         </div>
 
         <h1 className="mt-5 text-lg font-bold text-[var(--brand-forest)]">Recent activity</h1>
         <p className="text-xs text-[var(--brand-forest)]/60">Latest signals from your assistant and customers</p>
 
         <ul className="mt-4 space-y-2.5">
-          {NOTIFICATIONS.map((n, i) => (
+          {notifications.map((n, i) => (
             <li key={n.id} style={{ animationDelay: `${i * 40}ms` }} className="animate-fade-up">
-              <Link
-                to="/notifications/$id"
-                params={{ id: n.id }}
-                className="relative block rounded-2xl glass border border-white/40 p-3.5 transition-premium hover:translate-y-[-1px] hover:border-[var(--brand-lime)]/40 shadow-[var(--shadow-card)]"
+              <button
+                type="button"
+                onClick={() => handleClick(n)}
+                className={`relative block w-full text-left rounded-2xl border p-3.5 transition-[background,border,transform,box-shadow] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] hover:translate-y-[-1px] hover:border-[var(--brand-lime)]/40 shadow-[var(--shadow-card)] ${
+                  n.unread
+                    ? "bg-[var(--brand-lime)]/10 border-[var(--brand-lime)]/30"
+                    : "glass border-white/40"
+                }`}
               >
                 <div className="flex items-start gap-3">
                   <div className="mt-0.5 w-9 h-9 shrink-0 rounded-xl bg-[var(--brand-forest)]/5 text-[var(--brand-forest)] inline-flex items-center justify-center">
@@ -65,7 +102,7 @@ function Notifications() {
                     <p className="mt-0.5 text-xs text-[var(--brand-forest)]/70 line-clamp-2">{n.preview}</p>
                     <div className="mt-2 flex items-center justify-between">
                       <span className="text-[10px] font-semibold uppercase tracking-wide text-[var(--brand-forest)]/50">
-                        {n.category}
+                        {n.category} · {n.type}
                       </span>
                       {n.unread && (
                         <span className="w-2 h-2 rounded-full bg-[var(--brand-lime)] shadow-[0_0_0_4px_rgba(139,195,74,0.2)]" />
@@ -73,7 +110,7 @@ function Notifications() {
                     </div>
                   </div>
                 </div>
-              </Link>
+              </button>
             </li>
           ))}
         </ul>
