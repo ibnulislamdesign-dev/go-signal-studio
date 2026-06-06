@@ -117,9 +117,13 @@ function Dashboard() {
       {/* Bottom nav */}
       <div className="absolute bottom-0 left-0 right-0">
         <div className="relative h-20 glass border-t border-white/50">
-          <div className="absolute -top-7 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-white shadow-[0_8px_20px_-6px_rgba(0,77,64,0.3)] flex items-center justify-center">
+          <Link
+            to="/assistant"
+            aria-label="AI Assistant"
+            className="absolute -top-7 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-white shadow-[0_8px_20px_-6px_rgba(0,77,64,0.3)] flex items-center justify-center transition-premium hover:scale-110"
+          >
             <img src={logo} alt="" className="w-10 h-10 object-contain" />
-          </div>
+          </Link>
           <div className="flex items-center justify-between h-full px-10">
             <Link to="/dashboard" className="text-[var(--brand-lime)] transition-premium hover:scale-110">
               <Home className="w-7 h-7" strokeWidth={2.5} />
