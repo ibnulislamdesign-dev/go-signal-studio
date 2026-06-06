@@ -24,6 +24,7 @@ import { Route as BusinessCategoryRouteImport } from './routes/business-category
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TrafficIdRouteImport } from './routes/traffic.$id'
 import { Route as NotificationsIdRouteImport } from './routes/notifications.$id'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 
 const WelcomeRoute = WelcomeRouteImport.update({
   id: '/welcome',
@@ -100,6 +101,11 @@ const NotificationsIdRoute = NotificationsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => NotificationsRoute,
 } as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/subscription': typeof SubscriptionRoute
   '/traffic': typeof TrafficRouteWithChildren
   '/welcome': typeof WelcomeRoute
+  '/api/chat': typeof ApiChatRoute
   '/notifications/$id': typeof NotificationsIdRoute
   '/traffic/$id': typeof TrafficIdRoute
 }
@@ -132,6 +139,7 @@ export interface FileRoutesByTo {
   '/subscription': typeof SubscriptionRoute
   '/traffic': typeof TrafficRouteWithChildren
   '/welcome': typeof WelcomeRoute
+  '/api/chat': typeof ApiChatRoute
   '/notifications/$id': typeof NotificationsIdRoute
   '/traffic/$id': typeof TrafficIdRoute
 }
@@ -150,6 +158,7 @@ export interface FileRoutesById {
   '/subscription': typeof SubscriptionRoute
   '/traffic': typeof TrafficRouteWithChildren
   '/welcome': typeof WelcomeRoute
+  '/api/chat': typeof ApiChatRoute
   '/notifications/$id': typeof NotificationsIdRoute
   '/traffic/$id': typeof TrafficIdRoute
 }
@@ -169,6 +178,7 @@ export interface FileRouteTypes {
     | '/subscription'
     | '/traffic'
     | '/welcome'
+    | '/api/chat'
     | '/notifications/$id'
     | '/traffic/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -186,6 +196,7 @@ export interface FileRouteTypes {
     | '/subscription'
     | '/traffic'
     | '/welcome'
+    | '/api/chat'
     | '/notifications/$id'
     | '/traffic/$id'
   id:
@@ -203,6 +214,7 @@ export interface FileRouteTypes {
     | '/subscription'
     | '/traffic'
     | '/welcome'
+    | '/api/chat'
     | '/notifications/$id'
     | '/traffic/$id'
   fileRoutesById: FileRoutesById
@@ -221,6 +233,7 @@ export interface RootRouteChildren {
   SubscriptionRoute: typeof SubscriptionRoute
   TrafficRoute: typeof TrafficRouteWithChildren
   WelcomeRoute: typeof WelcomeRoute
+  ApiChatRoute: typeof ApiChatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -330,6 +343,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotificationsIdRouteImport
       parentRoute: typeof NotificationsRoute
     }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -370,6 +390,7 @@ const rootRouteChildren: RootRouteChildren = {
   SubscriptionRoute: SubscriptionRoute,
   TrafficRoute: TrafficRouteWithChildren,
   WelcomeRoute: WelcomeRoute,
+  ApiChatRoute: ApiChatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
