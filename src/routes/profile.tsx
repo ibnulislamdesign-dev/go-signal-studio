@@ -229,15 +229,27 @@ function Profile() {
           <div className="mt-4 flex flex-col items-center">
             <div className="relative">
               <div className="w-24 h-24 rounded-full p-[3px] bg-gradient-to-br from-[var(--brand-lime)] to-[var(--brand-forest)] shadow-[0_12px_28px_-12px_rgba(0,77,64,0.5)]">
-                <div className="w-full h-full rounded-full overflow-hidden bg-gradient-to-br from-amber-200 to-amber-500" />
+                <div className="w-full h-full rounded-full overflow-hidden bg-gradient-to-br from-amber-200 to-amber-500">
+                  {avatarUrl && (
+                    <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" />
+                  )}
+                </div>
               </div>
               <button
                 type="button"
-                aria-label="Edit photo"
+                aria-label="Change profile photo"
+                onClick={() => fileInputRef.current?.click()}
                 className="absolute bottom-0.5 right-0.5 w-8 h-8 rounded-full bg-[var(--brand-lime)] text-white inline-flex items-center justify-center shadow-md transition-premium hover:scale-110"
               >
-                <Pencil className="w-4 h-4" />
+                <Camera className="w-4 h-4" />
               </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handlePickAvatar}
+              />
             </div>
             <h1 className="mt-3 text-base font-extrabold text-[var(--brand-forest)]">{personal.fullName}</h1>
             <p className="text-xs text-[var(--brand-forest)]/60">{t.owner} · {business.businessName}</p>
