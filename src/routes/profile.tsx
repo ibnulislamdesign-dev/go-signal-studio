@@ -118,6 +118,28 @@ function useLang() {
 function Profile() {
   const [dark, setDark] = useTheme();
   const [lang, setLang] = useLang();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      const s = localStorage.getItem("gs-avatar");
+      if (s) setAvatarUrl(s);
+    } catch {}
+  }, []);
+
+  const handlePickAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const url = reader.result as string;
+      setAvatarUrl(url);
+      try { localStorage.setItem("gs-avatar", url); } catch {}
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
   const t = useMemo(() => DICT[lang] ?? DICT["English (US)"], [lang]);
 
   // edit modes per section
