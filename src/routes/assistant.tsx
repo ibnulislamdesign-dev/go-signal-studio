@@ -8,6 +8,7 @@ import {
   Home,
   Menu,
   Mic,
+  Paperclip,
   Plus,
   Sparkles,
   Trash2,
@@ -253,8 +254,10 @@ function ChatWindow({
   });
   const [input, setInput] = useState("");
   const [voiceOpen, setVoiceOpen] = useState(false);
+  const [attachments, setAttachments] = useState<File[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isLoading = status === "submitted" || status === "streaming";
 
@@ -276,6 +279,7 @@ function ChatWindow({
     const text = input.trim();
     if (!text || isLoading) return;
     setInput("");
+    setAttachments([]);
     await sendMessage({ text });
   }
 
@@ -301,7 +305,48 @@ function ChatWindow({
 
       {/* Composer */}
       <div className="px-4 pb-3 pt-2 shrink-0">
+        {attachments.length > 0 && (
+          <div className="mb-2 flex flex-wrap gap-1.5">
+            {attachments.map((f, i) => (
+              <span
+                key={`${f.name}-${i}`}
+                className="inline-flex items-center gap-1.5 max-w-[180px] bg-[var(--brand-forest)]/5 text-[var(--brand-forest)] text-[11px] font-medium px-2.5 py-1 rounded-full"
+              >
+                <Paperclip className="w-3 h-3 shrink-0" />
+                <span className="truncate">{f.name}</span>
+                <button
+                  type="button"
+                  onClick={() => setAttachments((a) => a.filter((_, j) => j !== i))}
+                  aria-label={`Remove ${f.name}`}
+                  className="text-[var(--brand-forest)]/60 hover:text-[var(--brand-forest)]"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
         <div className="glass rounded-3xl p-2 shadow-[var(--shadow-card)] flex items-end gap-2">
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            accept="image/*,application/pdf,.doc,.docx,.txt"
+            className="hidden"
+            onChange={(e) => {
+              const files = Array.from(e.target.files ?? []);
+              if (files.length) setAttachments((prev) => [...prev, ...files]);
+              e.target.value = "";
+            }}
+          />
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            aria-label="Attach files"
+            className="w-10 h-10 rounded-full bg-[var(--brand-forest)]/5 text-[var(--brand-forest)] inline-flex items-center justify-center transition-premium hover:scale-105"
+          >
+            <Paperclip className="w-5 h-5" />
+          </button>
           <textarea
             ref={inputRef}
             value={input}
