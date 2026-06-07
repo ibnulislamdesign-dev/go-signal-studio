@@ -8,6 +8,7 @@ import {
   Home,
   Menu,
   Mic,
+  Paperclip,
   Plus,
   Sparkles,
   Trash2,
