@@ -16,7 +16,6 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PasswordRouteImport } from './routes/password'
 import { Route as OtpRouteImport } from './routes/otp'
-import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CongratulationsRouteImport } from './routes/congratulations'
 import { Route as BusinessInfoRouteImport } from './routes/business-info'
@@ -62,11 +61,6 @@ const OtpRoute = OtpRouteImport.update({
   path: '/otp',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NotificationsRoute = NotificationsRouteImport.update({
-  id: '/notifications',
-  path: '/notifications',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -103,9 +97,9 @@ const TrafficIdRoute = TrafficIdRouteImport.update({
   getParentRoute: () => TrafficRoute,
 } as any)
 const NotificationsIdRoute = NotificationsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => NotificationsRoute,
+  id: '/notifications/$id',
+  path: '/notifications/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
@@ -120,7 +114,6 @@ export interface FileRoutesByFullPath {
   '/business-info': typeof BusinessInfoRoute
   '/congratulations': typeof CongratulationsRoute
   '/dashboard': typeof DashboardRoute
-  '/notifications': typeof NotificationsRouteWithChildren
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
   '/profile': typeof ProfileRoute
@@ -139,7 +132,6 @@ export interface FileRoutesByTo {
   '/business-info': typeof BusinessInfoRoute
   '/congratulations': typeof CongratulationsRoute
   '/dashboard': typeof DashboardRoute
-  '/notifications': typeof NotificationsRouteWithChildren
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
   '/profile': typeof ProfileRoute
@@ -159,7 +151,6 @@ export interface FileRoutesById {
   '/business-info': typeof BusinessInfoRoute
   '/congratulations': typeof CongratulationsRoute
   '/dashboard': typeof DashboardRoute
-  '/notifications': typeof NotificationsRouteWithChildren
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
   '/profile': typeof ProfileRoute
@@ -180,7 +171,6 @@ export interface FileRouteTypes {
     | '/business-info'
     | '/congratulations'
     | '/dashboard'
-    | '/notifications'
     | '/otp'
     | '/password'
     | '/profile'
@@ -199,7 +189,6 @@ export interface FileRouteTypes {
     | '/business-info'
     | '/congratulations'
     | '/dashboard'
-    | '/notifications'
     | '/otp'
     | '/password'
     | '/profile'
@@ -218,7 +207,6 @@ export interface FileRouteTypes {
     | '/business-info'
     | '/congratulations'
     | '/dashboard'
-    | '/notifications'
     | '/otp'
     | '/password'
     | '/profile'
@@ -238,7 +226,6 @@ export interface RootRouteChildren {
   BusinessInfoRoute: typeof BusinessInfoRoute
   CongratulationsRoute: typeof CongratulationsRoute
   DashboardRoute: typeof DashboardRoute
-  NotificationsRoute: typeof NotificationsRouteWithChildren
   OtpRoute: typeof OtpRoute
   PasswordRoute: typeof PasswordRoute
   ProfileRoute: typeof ProfileRoute
@@ -247,6 +234,7 @@ export interface RootRouteChildren {
   TrafficRoute: typeof TrafficRouteWithChildren
   WelcomeRoute: typeof WelcomeRoute
   ApiChatRoute: typeof ApiChatRoute
+  NotificationsIdRoute: typeof NotificationsIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -300,13 +288,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OtpRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/notifications': {
-      id: '/notifications'
-      path: '/notifications'
-      fullPath: '/notifications'
-      preLoaderRoute: typeof NotificationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -358,10 +339,10 @@ declare module '@tanstack/react-router' {
     }
     '/notifications/$id': {
       id: '/notifications/$id'
-      path: '/$id'
+      path: '/notifications/$id'
       fullPath: '/notifications/$id'
       preLoaderRoute: typeof NotificationsIdRouteImport
-      parentRoute: typeof NotificationsRoute
+      parentRoute: typeof rootRouteImport
     }
     '/api/chat': {
       id: '/api/chat'
@@ -372,18 +353,6 @@ declare module '@tanstack/react-router' {
     }
   }
 }
-
-interface NotificationsRouteChildren {
-  NotificationsIdRoute: typeof NotificationsIdRoute
-}
-
-const NotificationsRouteChildren: NotificationsRouteChildren = {
-  NotificationsIdRoute: NotificationsIdRoute,
-}
-
-const NotificationsRouteWithChildren = NotificationsRoute._addFileChildren(
-  NotificationsRouteChildren,
-)
 
 interface TrafficRouteChildren {
   TrafficIdRoute: typeof TrafficIdRoute
@@ -403,7 +372,6 @@ const rootRouteChildren: RootRouteChildren = {
   BusinessInfoRoute: BusinessInfoRoute,
   CongratulationsRoute: CongratulationsRoute,
   DashboardRoute: DashboardRoute,
-  NotificationsRoute: NotificationsRouteWithChildren,
   OtpRoute: OtpRoute,
   PasswordRoute: PasswordRoute,
   ProfileRoute: ProfileRoute,
@@ -412,6 +380,7 @@ const rootRouteChildren: RootRouteChildren = {
   TrafficRoute: TrafficRouteWithChildren,
   WelcomeRoute: WelcomeRoute,
   ApiChatRoute: ApiChatRoute,
+  NotificationsIdRoute: NotificationsIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
