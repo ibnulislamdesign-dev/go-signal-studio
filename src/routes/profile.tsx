@@ -1,14 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { MobileShell, StatusBar, HomeIndicator } from "@/components/MobileShell";
+import { MobileShell } from "@/components/MobileShell";
+import { AppBottomNav } from "@/components/BottomNav";
 import {
   ChevronLeft, Pencil, Check, User, Mail, Phone, Building2, MapPin, Tag,
   Sun, Moon, Languages, Fingerprint, ScanFace, KeyRound, LifeBuoy,
-  MessageCircle, PhoneCall, Home, X, ShieldCheck, Loader2, Eye, EyeOff,
+  MessageCircle, PhoneCall, X, ShieldCheck, Loader2, Eye, EyeOff,
   Copy, CheckCircle2, Info, Smartphone, Link2, Camera,
 } from "lucide-react";
 import { PhoneInput } from "@/components/PhoneInput";
-import logo from "@/assets/go-signal-logo.png";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
@@ -209,10 +209,9 @@ function Profile() {
   const cancelBusiness = () => { setBusinessDraft(business); setEditBusiness(false); };
 
   return (
-    <MobileShell>
+    <MobileShell bottomNav={<AppBottomNav active="profile" autoHide />}>
       <div className="min-h-full flex flex-col">
-        <StatusBar />
-        <div className="flex-1 px-5 pt-2 pb-6 animate-fade-up">
+        <div className="flex-1 px-5 pt-4 pb-6 animate-fade-up">
           {/* Top bar */}
           <div className="flex items-center justify-between">
             <Link
@@ -504,26 +503,6 @@ function Profile() {
             </div>
           </SectionCard>
 
-          {/* spacer so content can scroll above bottom nav */}
-          <div className="h-24" />
-        </div>
-
-        {/* Sticky bottom nav */}
-        <div className="sticky bottom-0 left-0 right-0 z-10 mt-auto">
-          <div className="relative h-20 glass border-t border-white/50">
-            <div className="absolute -top-7 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-[var(--surface)] shadow-[0_8px_20px_-6px_rgba(0,77,64,0.3)] flex items-center justify-center">
-              <img src={logo} alt="" className="w-10 h-10 object-contain" />
-            </div>
-            <div className="flex items-center justify-between h-full px-10">
-              <Link to="/dashboard" className="text-[var(--brand-forest)]/50 transition-premium hover:scale-110">
-                <Home className="w-7 h-7" strokeWidth={2.5} />
-              </Link>
-              <Link to="/profile" className="w-10 h-10 rounded-full ring-2 ring-[var(--brand-lime)] overflow-hidden transition-premium hover:scale-110">
-                <div className="w-full h-full bg-gradient-to-br from-amber-200 to-amber-500" />
-              </Link>
-            </div>
-          </div>
-          <HomeIndicator />
         </div>
       </div>
 

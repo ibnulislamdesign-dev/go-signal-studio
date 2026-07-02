@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { MobileShell, StatusBar, HomeIndicator } from "@/components/MobileShell";
-import { Bell, ChevronDown, Home, Phone, MessageCircle, PhoneCall, AlertTriangle, Sparkles, Clock } from "lucide-react";
+import { MobileShell } from "@/components/MobileShell";
+import { AppBottomNav } from "@/components/BottomNav";
+import { Bell, ChevronDown, Phone, MessageCircle, PhoneCall, AlertTriangle, Sparkles, Clock } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid } from "recharts";
 import logo from "@/assets/go-signal-logo.png";
 import { useUnreadCount } from "@/lib/notifications";
@@ -26,9 +27,8 @@ function Dashboard() {
   const [alertMode, setAlertMode] = useState<"trial" | "api" | "lead">("trial");
   const unread = useUnreadCount();
   return (
-    <MobileShell>
-      <StatusBar />
-      <div className="px-5 pt-2 pb-28 animate-fade-up">
+    <MobileShell bottomNav={<AppBottomNav active="home" />}>
+      <div className="px-5 pt-4 animate-fade-up">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -112,28 +112,6 @@ function Dashboard() {
             </ResponsiveContainer>
           </div>
         </div>
-      </div>
-
-      {/* Bottom nav */}
-      <div className="absolute bottom-0 left-0 right-0">
-        <div className="relative h-20 glass border-t border-white/50">
-          <Link
-            to="/assistant"
-            aria-label="AI Assistant"
-            className="absolute -top-7 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-white shadow-[0_8px_20px_-6px_rgba(0,77,64,0.3)] flex items-center justify-center transition-premium hover:scale-110"
-          >
-            <img src={logo} alt="" className="w-10 h-10 object-contain" />
-          </Link>
-          <div className="flex items-center justify-between h-full px-10">
-            <Link to="/dashboard" className="text-[var(--brand-lime)] transition-premium hover:scale-110">
-              <Home className="w-7 h-7" strokeWidth={2.5} />
-            </Link>
-            <Link to="/profile" aria-label="Profile" className="w-10 h-10 rounded-full ring-2 ring-transparent hover:ring-[var(--brand-lime)] overflow-hidden transition-premium hover:scale-110">
-              <div className="w-full h-full bg-gradient-to-br from-amber-200 to-amber-500" />
-            </Link>
-          </div>
-        </div>
-        <HomeIndicator />
       </div>
     </MobileShell>
   );
