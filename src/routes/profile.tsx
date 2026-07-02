@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { MobileShell, StatusBar, HomeIndicator } from "@/components/MobileShell";
+import { MobileShell } from "@/components/MobileShell";
+import { AppBottomNav } from "@/components/BottomNav";
 import {
   ChevronLeft, Pencil, Check, User, Mail, Phone, Building2, MapPin, Tag,
   Sun, Moon, Languages, Fingerprint, ScanFace, KeyRound, LifeBuoy,
@@ -209,10 +210,9 @@ function Profile() {
   const cancelBusiness = () => { setBusinessDraft(business); setEditBusiness(false); };
 
   return (
-    <MobileShell>
+    <MobileShell bottomNav={<AppBottomNav active="profile" autoHide />}>
       <div className="min-h-full flex flex-col">
-        <StatusBar />
-        <div className="flex-1 px-5 pt-2 pb-6 animate-fade-up">
+        <div className="flex-1 px-5 pt-4 pb-6 animate-fade-up">
           {/* Top bar */}
           <div className="flex items-center justify-between">
             <Link
