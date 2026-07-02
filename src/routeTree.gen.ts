@@ -24,7 +24,6 @@ import { Route as BusinessCategoryRouteImport } from './routes/business-category
 import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TrafficIdRouteImport } from './routes/traffic.$id'
-import { Route as NotificationsIdRouteImport } from './routes/notifications.$id'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 
 const WelcomeRoute = WelcomeRouteImport.update({
@@ -102,11 +101,6 @@ const TrafficIdRoute = TrafficIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => TrafficRoute,
 } as any)
-const NotificationsIdRoute = NotificationsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => NotificationsRoute,
-} as any)
 const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
   path: '/api/chat',
@@ -120,7 +114,7 @@ export interface FileRoutesByFullPath {
   '/business-info': typeof BusinessInfoRoute
   '/congratulations': typeof CongratulationsRoute
   '/dashboard': typeof DashboardRoute
-  '/notifications': typeof NotificationsRouteWithChildren
+  '/notifications': typeof NotificationsRoute
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
   '/profile': typeof ProfileRoute
@@ -129,7 +123,6 @@ export interface FileRoutesByFullPath {
   '/traffic': typeof TrafficRouteWithChildren
   '/welcome': typeof WelcomeRoute
   '/api/chat': typeof ApiChatRoute
-  '/notifications/$id': typeof NotificationsIdRoute
   '/traffic/$id': typeof TrafficIdRoute
 }
 export interface FileRoutesByTo {
@@ -139,7 +132,7 @@ export interface FileRoutesByTo {
   '/business-info': typeof BusinessInfoRoute
   '/congratulations': typeof CongratulationsRoute
   '/dashboard': typeof DashboardRoute
-  '/notifications': typeof NotificationsRouteWithChildren
+  '/notifications': typeof NotificationsRoute
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
   '/profile': typeof ProfileRoute
@@ -148,7 +141,6 @@ export interface FileRoutesByTo {
   '/traffic': typeof TrafficRouteWithChildren
   '/welcome': typeof WelcomeRoute
   '/api/chat': typeof ApiChatRoute
-  '/notifications/$id': typeof NotificationsIdRoute
   '/traffic/$id': typeof TrafficIdRoute
 }
 export interface FileRoutesById {
@@ -159,7 +151,7 @@ export interface FileRoutesById {
   '/business-info': typeof BusinessInfoRoute
   '/congratulations': typeof CongratulationsRoute
   '/dashboard': typeof DashboardRoute
-  '/notifications': typeof NotificationsRouteWithChildren
+  '/notifications': typeof NotificationsRoute
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
   '/profile': typeof ProfileRoute
@@ -168,7 +160,6 @@ export interface FileRoutesById {
   '/traffic': typeof TrafficRouteWithChildren
   '/welcome': typeof WelcomeRoute
   '/api/chat': typeof ApiChatRoute
-  '/notifications/$id': typeof NotificationsIdRoute
   '/traffic/$id': typeof TrafficIdRoute
 }
 export interface FileRouteTypes {
@@ -189,7 +180,6 @@ export interface FileRouteTypes {
     | '/traffic'
     | '/welcome'
     | '/api/chat'
-    | '/notifications/$id'
     | '/traffic/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -208,7 +198,6 @@ export interface FileRouteTypes {
     | '/traffic'
     | '/welcome'
     | '/api/chat'
-    | '/notifications/$id'
     | '/traffic/$id'
   id:
     | '__root__'
@@ -227,7 +216,6 @@ export interface FileRouteTypes {
     | '/traffic'
     | '/welcome'
     | '/api/chat'
-    | '/notifications/$id'
     | '/traffic/$id'
   fileRoutesById: FileRoutesById
 }
@@ -238,7 +226,7 @@ export interface RootRouteChildren {
   BusinessInfoRoute: typeof BusinessInfoRoute
   CongratulationsRoute: typeof CongratulationsRoute
   DashboardRoute: typeof DashboardRoute
-  NotificationsRoute: typeof NotificationsRouteWithChildren
+  NotificationsRoute: typeof NotificationsRoute
   OtpRoute: typeof OtpRoute
   PasswordRoute: typeof PasswordRoute
   ProfileRoute: typeof ProfileRoute
@@ -356,13 +344,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrafficIdRouteImport
       parentRoute: typeof TrafficRoute
     }
-    '/notifications/$id': {
-      id: '/notifications/$id'
-      path: '/$id'
-      fullPath: '/notifications/$id'
-      preLoaderRoute: typeof NotificationsIdRouteImport
-      parentRoute: typeof NotificationsRoute
-    }
     '/api/chat': {
       id: '/api/chat'
       path: '/api/chat'
@@ -372,18 +353,6 @@ declare module '@tanstack/react-router' {
     }
   }
 }
-
-interface NotificationsRouteChildren {
-  NotificationsIdRoute: typeof NotificationsIdRoute
-}
-
-const NotificationsRouteChildren: NotificationsRouteChildren = {
-  NotificationsIdRoute: NotificationsIdRoute,
-}
-
-const NotificationsRouteWithChildren = NotificationsRoute._addFileChildren(
-  NotificationsRouteChildren,
-)
 
 interface TrafficRouteChildren {
   TrafficIdRoute: typeof TrafficIdRoute
@@ -403,7 +372,7 @@ const rootRouteChildren: RootRouteChildren = {
   BusinessInfoRoute: BusinessInfoRoute,
   CongratulationsRoute: CongratulationsRoute,
   DashboardRoute: DashboardRoute,
-  NotificationsRoute: NotificationsRouteWithChildren,
+  NotificationsRoute: NotificationsRoute,
   OtpRoute: OtpRoute,
   PasswordRoute: PasswordRoute,
   ProfileRoute: ProfileRoute,
