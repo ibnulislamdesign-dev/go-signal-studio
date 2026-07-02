@@ -137,7 +137,7 @@ function useNotificationAction(n: Notification): PrimaryAction {
 }
 
 function NotificationDetail() {
-  const { n } = Route.useLoaderData();
+  const { n } = Route.useLoaderData() as { n: Notification };
   const action = useNotificationAction(n);
 
   useEffect(() => {
