@@ -5,11 +5,10 @@ import { AppBottomNav } from "@/components/BottomNav";
 import {
   ChevronLeft, Pencil, Check, User, Mail, Phone, Building2, MapPin, Tag,
   Sun, Moon, Languages, Fingerprint, ScanFace, KeyRound, LifeBuoy,
-  MessageCircle, PhoneCall, Home, X, ShieldCheck, Loader2, Eye, EyeOff,
+  MessageCircle, PhoneCall, X, ShieldCheck, Loader2, Eye, EyeOff,
   Copy, CheckCircle2, Info, Smartphone, Link2, Camera,
 } from "lucide-react";
 import { PhoneInput } from "@/components/PhoneInput";
-import logo from "@/assets/go-signal-logo.png";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
