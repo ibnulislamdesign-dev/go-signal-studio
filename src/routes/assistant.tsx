@@ -14,7 +14,8 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { MobileShell, StatusBar, HomeIndicator } from "@/components/MobileShell";
+import { MobileShell } from "@/components/MobileShell";
+import { AppBottomNav } from "@/components/BottomNav";
 import logo from "@/assets/go-signal-logo.png";
 import { useUnreadCount } from "@/lib/notifications";
 
