@@ -153,9 +153,8 @@ function AssistantPage() {
   const unread = useUnreadCount();
 
   return (
-    <MobileShell>
-      <StatusBar />
-      <div className="flex flex-col h-[calc(100vh-44px)] md:h-[calc(844px-44px)] animate-fade-up">
+    <MobileShell bottomNav={<AppBottomNav active="assistant" autoHide />}>
+      <div className="flex flex-col h-full md:h-[844px] animate-fade-up">
         {/* Header */}
         <div className="px-5 pt-2 pb-3 flex items-center justify-between">
           <button
@@ -193,29 +192,7 @@ function AssistantPage() {
           />
         )}
 
-        {/* Bottom nav */}
-        <div className="relative h-20 glass border-t border-white/50 shrink-0">
-          <div className="absolute -top-7 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-white shadow-[0_8px_20px_-6px_rgba(0,77,64,0.3)] flex items-center justify-center">
-            <img src={logo} alt="" className="w-10 h-10 object-contain" />
-          </div>
-          <div className="flex items-center justify-between h-full px-10">
-            <Link
-              to="/dashboard"
-              className="text-[var(--brand-forest)]/70 transition-premium hover:scale-110"
-              aria-label="Home"
-            >
-              <Home className="w-7 h-7" strokeWidth={2.5} />
-            </Link>
-            <Link
-              to="/profile"
-              aria-label="Profile"
-              className="w-10 h-10 rounded-full ring-2 ring-transparent hover:ring-[var(--brand-lime)] overflow-hidden transition-premium hover:scale-110"
-            >
-              <div className="w-full h-full bg-gradient-to-br from-amber-200 to-amber-500" />
-            </Link>
-          </div>
-        </div>
-        <HomeIndicator />
+        <div className="h-24 shrink-0" aria-hidden />
       </div>
 
       <HistoryDrawer
