@@ -1,13 +1,14 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { MobileShell, StatusBar, HomeIndicator } from "@/components/MobileShell";
-import { ChevronLeft, Check, CheckCircle2, ArrowUpRight, Clock, AlertTriangle, Info, Flame } from "lucide-react";
-import { findNotification, markRead } from "@/lib/notifications";
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { MobileShell } from "@/components/MobileShell";
+import {
+  ChevronLeft, Clock, AlertTriangle, Info, Flame,
+  Sparkles, Settings, Wallet, MessageSquare, MessageCircle,
+  CreditCard, PhoneCall, Sparkle, ArrowRight,
+} from "lucide-react";
+import { findNotification, markRead, type Notification } from "@/lib/notifications";
 
 export const Route = createFileRoute("/notifications/$id")({
-  validateSearch: (s: Record<string, unknown>) => ({
-    sheet: s.sheet === 1 || s.sheet === "1" ? 1 : undefined,
-  }),
   loader: ({ params }) => {
     const n = findNotification(params.id);
     if (!n) throw notFound();
@@ -21,123 +22,216 @@ export const Route = createFileRoute("/notifications/$id")({
   }),
   notFoundComponent: () => (
     <MobileShell>
-      <StatusBar />
-      <div className="px-6 pt-10 text-center">
+      <div className="min-h-full w-full bg-[var(--canvas)] px-6 pt-10 text-center">
         <p className="text-sm text-[var(--brand-forest)]/70">Notification not found.</p>
-        <Link to="/notifications" className="mt-4 inline-block text-sm font-semibold text-[var(--brand-lime)]">
+        <Link
+          to="/notifications"
+          className="mt-4 inline-block text-sm font-semibold text-[var(--brand-lime)]"
+        >
           Back to notifications
         </Link>
       </div>
-      <HomeIndicator />
     </MobileShell>
   ),
   errorComponent: ({ error }) => (
     <MobileShell>
-      <StatusBar />
-      <div className="px-6 pt-10 text-center text-sm text-[var(--brand-forest)]/70">
+      <div className="min-h-full w-full bg-[var(--canvas)] px-6 pt-10 text-center text-sm text-[var(--brand-forest)]/70">
         Something went wrong. {String(error)}
       </div>
-      <HomeIndicator />
     </MobileShell>
   ),
-  component: SingleMessage,
+  component: NotificationDetail,
 });
 
-function SingleMessage() {
-  const { n } = Route.useLoaderData();
-  const { sheet } = Route.useSearch();
-  const [read, setRead] = useState(!n.unread);
+const CATEGORY_ICONS: Record<Notification["category"], React.ReactNode> = {
+  "AI Assistant": <Sparkles className="w-4 h-4" />,
+  "System Update": <Settings className="w-4 h-4" />,
+  Billing: <Wallet className="w-4 h-4" />,
+  Customer: <MessageSquare className="w-4 h-4" />,
+};
+
+const PRIORITY_STYLES: Record<Notification["priority"], string> = {
+  high: "bg-red-100 text-red-700",
+  medium: "bg-amber-100 text-amber-700",
+  low: "bg-[var(--brand-lime)]/20 text-[var(--brand-forest)]",
+};
+
+function extractPhoneNumber(text: string): string | null {
+  const m = text.match(/0\d{10}/);
+  return m ? m[0] : null;
+}
+
+type PrimaryAction = {
+  label: string;
+  icon: React.ReactNode;
+  className: string;
+  onClick: () => void;
+};
+
+function useNotificationAction(n: Notification): PrimaryAction {
+  const navigate = useNavigate();
+  const go = (to: string) => navigate({ to });
+
+  const isMissedCall = /missed call/i.test(n.title) || /missed call/i.test(n.preview);
+  const phone = extractPhoneNumber(`${n.preview} ${n.body}`);
+
+  if (isMissedCall && phone) {
+    return {
+      label: `Call back ${phone}`,
+      icon: <PhoneCall className="w-4 h-4" />,
+      className: "bg-[var(--brand-forest)] text-white hover:scale-[1.01]",
+      onClick: () => { window.location.href = `tel:${phone}`; },
+    };
+  }
+
+  if (n.category === "Billing") {
+    const isRenewed = /renewed/i.test(n.title);
+    return {
+      label: isRenewed ? "Manage billing plan" : "Complete subscription",
+      icon: <CreditCard className="w-4 h-4" />,
+      className: "bg-gradient-to-r from-[var(--brand-forest)] to-[#00695c] text-white hover:scale-[1.01]",
+      onClick: () => go("/subscription"),
+    };
+  }
+
+  if (n.type === "chat") {
+    const isWhatsApp =
+      /whatsapp/i.test(n.title) ||
+      /whatsapp/i.test(n.preview) ||
+      /whatsapp/i.test(n.body);
+    return {
+      label: isWhatsApp ? "Reply on WhatsApp" : "Open chat thread",
+      icon: <MessageCircle className="w-4 h-4" />,
+      className: isWhatsApp
+        ? "bg-[#25D366] text-white hover:scale-[1.01]"
+        : "bg-[var(--brand-forest)] text-white hover:scale-[1.01]",
+      onClick: () => go(`/traffic/${n.targetId}`),
+    };
+  }
+
+  if (n.category === "AI Assistant") {
+    return {
+      label: "Open AI Assistant Interface",
+      icon: <Sparkle className="w-4 h-4" />,
+      className: "bg-[var(--brand-forest)] text-white hover:scale-[1.01]",
+      onClick: () => go("/assistant"),
+    };
+  }
+
+  if (n.link) {
+    const to = n.link.to;
+    return {
+      label: n.link.label,
+      icon: <ArrowRight className="w-4 h-4" />,
+      className: "bg-[var(--brand-forest)] text-white hover:scale-[1.01]",
+      onClick: () => go(to),
+    };
+  }
+
+  return {
+    label: "Got it",
+    icon: <ArrowRight className="w-4 h-4" />,
+    className: "bg-[var(--brand-forest)] text-white hover:scale-[1.01]",
+    onClick: () => go("/notifications"),
+  };
+}
+
+function NotificationDetail() {
+  const { n } = Route.useLoaderData() as { n: Notification };
+  const action = useNotificationAction(n);
 
   useEffect(() => {
-    if (n.unread) {
-      markRead(n.id);
-      setRead(true);
-    }
+    if (n.unread) markRead(n.id);
   }, [n.id, n.unread]);
 
-  const priorityStyles =
+  const priorityMeta =
     n.priority === "high"
-      ? { bg: "bg-red-500/10", text: "text-red-600", label: "High priority", Icon: Flame }
+      ? { Icon: Flame, label: "High priority" }
       : n.priority === "medium"
-        ? { bg: "bg-amber-500/10", text: "text-amber-600", label: "Medium priority", Icon: AlertTriangle }
-        : { bg: "bg-[var(--brand-forest)]/5", text: "text-[var(--brand-forest)]/70", label: "Low priority", Icon: Info };
-  const PriorityIcon = priorityStyles.Icon;
+        ? { Icon: AlertTriangle, label: "Medium priority" }
+        : { Icon: Info, label: "Low priority" };
+  const PriorityIcon = priorityMeta.Icon;
 
   return (
     <MobileShell>
-      <StatusBar />
-      <div className={`px-5 pt-2 pb-10 ${sheet ? "animate-slide-up" : "animate-fade-up"}`}>
-        <div className="flex items-center justify-between">
-          <Link
-            to="/notifications"
-            className="inline-flex items-center justify-center w-9 h-9 rounded-full text-[var(--brand-forest)] hover:bg-[var(--brand-forest)]/5 transition-premium"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </Link>
-          <span className="text-sm font-bold text-[var(--brand-forest)]">Message</span>
-          <span className="w-9" />
-        </div>
-
-        <div className="mt-5 rounded-2xl glass border border-white/40 p-5 shadow-[var(--shadow-card)]">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-[var(--brand-lime)] bg-[var(--brand-lime)]/15 px-2.5 py-1 rounded-full">
-              {n.category}
-            </span>
-            <span className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${priorityStyles.bg} ${priorityStyles.text}`}>
-              <PriorityIcon className="w-3 h-3" /> {priorityStyles.label}
+      <div className="min-h-full w-full bg-[var(--canvas)] text-[var(--brand-forest)] flex flex-col animate-fade-up">
+        {/* Sticky back header */}
+        <div className="sticky top-0 z-10 backdrop-blur-md bg-[var(--canvas)]/85 border-b border-[var(--brand-forest)]/5">
+          <div className="px-4 py-3 flex items-center justify-between">
+            <Link
+              to="/notifications"
+              className="inline-flex items-center gap-1.5 pl-1 pr-3 py-1.5 rounded-full text-[var(--brand-forest)] hover:bg-[var(--brand-forest)]/5 transition-premium text-xs font-bold"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Back to Notifications
+            </Link>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--brand-forest)]/50">
+              Activity detail
             </span>
           </div>
-          <h1 className="mt-3 text-xl font-extrabold text-[var(--brand-forest)] leading-snug">{n.title}</h1>
+        </div>
+
+        {/* Scrollable body */}
+        <div className="flex-1 overflow-y-auto px-5 pt-5 pb-40">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="w-10 h-10 rounded-xl bg-[var(--brand-forest)]/5 text-[var(--brand-forest)] inline-flex items-center justify-center">
+              {CATEGORY_ICONS[n.category]}
+            </span>
+            <span className="text-[10px] font-semibold uppercase tracking-wide text-[var(--brand-forest)]/60 bg-[var(--brand-forest)]/5 px-2 py-1 rounded-full">
+              {n.category}
+            </span>
+            <span className={`inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide px-2 py-1 rounded-full ${PRIORITY_STYLES[n.priority]}`}>
+              <PriorityIcon className="w-3 h-3" /> {priorityMeta.label}
+            </span>
+            <span className="text-[10px] font-semibold uppercase tracking-wide text-[var(--brand-forest)]/50 bg-[var(--brand-forest)]/5 px-2 py-1 rounded-full">
+              {n.type}
+            </span>
+          </div>
+
+          <h1 className="mt-4 text-xl font-extrabold text-[var(--brand-forest)] leading-snug">
+            {n.title}
+          </h1>
           <p className="mt-1 inline-flex items-center gap-1 text-xs text-[var(--brand-forest)]/50">
             <Clock className="w-3 h-3" /> {n.time}
           </p>
 
-          <div className="mt-5 h-px bg-[var(--brand-forest)]/10" />
+          <div className="mt-5 rounded-2xl glass border border-white/40 p-4 shadow-[var(--shadow-card)]">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--brand-forest)]/50">
+              Event details
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-[var(--brand-forest)]/85 whitespace-pre-wrap">
+              {n.body}
+            </p>
+          </div>
 
-          <div className="mt-4 space-y-3 text-sm leading-relaxed text-[var(--brand-forest)]/85">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--brand-forest)]/50">Event details</p>
-            <p>{n.body}</p>
+          <div className="mt-4 rounded-2xl bg-[var(--brand-forest)]/5 p-3.5">
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-[var(--brand-forest)]/50">
+              Reference
+            </div>
+            <div className="mt-1 text-[12px] font-mono text-[var(--brand-forest)]/80 break-all">
+              {n.targetId}
+            </div>
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setRead(true)}
-          disabled={read}
-          className={`mt-6 w-full inline-flex items-center justify-center gap-2 rounded-2xl py-4 font-semibold transition-premium ${
-            read
-              ? "bg-[var(--brand-forest)]/5 text-[var(--brand-forest)]/60 cursor-default"
-              : "bg-[var(--brand-lime)] text-white shadow-[0_8px_24px_-8px_rgba(139,195,74,0.6)] hover:translate-y-[-1px]"
-          }`}
-        >
-          {read ? (
-            <>
-              <CheckCircle2 className="w-4 h-4" /> Marked as read
-            </>
-          ) : (
-            <>
-              <Check className="w-4 h-4" /> Mark as Read
-            </>
-          )}
-        </button>
-
-        {n.link && (
-          <Link
-            to={n.link.to as never}
-            className="mt-3 w-full inline-flex items-center justify-center gap-2 rounded-2xl py-3.5 font-semibold text-[var(--brand-forest)] bg-white border border-[var(--brand-forest)]/10 transition-premium hover:border-[var(--brand-lime)] hover:translate-y-[-1px]"
+        {/* Sticky primary action */}
+        <div className="sticky bottom-0 left-0 right-0 px-5 pt-3 pb-7 border-t border-[var(--brand-forest)]/5 bg-[var(--canvas)]/95 backdrop-blur-md">
+          <button
+            type="button"
+            onClick={action.onClick}
+            className={`w-full rounded-full text-sm font-bold py-3.5 transition-premium inline-flex items-center justify-center gap-2 shadow-[var(--shadow-card)] ${action.className}`}
           >
-            {n.link.label} <ArrowUpRight className="w-4 h-4" />
+            {action.icon}
+            {action.label}
+          </button>
+          <Link
+            to="/notifications"
+            className="mt-2 block text-center text-[11px] font-semibold text-[var(--brand-forest)]/60 hover:text-[var(--brand-forest)] transition-premium py-1"
+          >
+            Back to all notifications
           </Link>
-        )}
-
-        <Link
-          to="/notifications"
-          className="mt-3 block text-center text-xs font-semibold text-[var(--brand-forest)]/60 hover:text-[var(--brand-forest)] transition-premium"
-        >
-          Back to all notifications
-        </Link>
+        </div>
       </div>
-      <HomeIndicator />
     </MobileShell>
   );
 }
