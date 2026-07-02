@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   ArrowUp,
   Bell,
-  Home,
   Menu,
   Mic,
   Paperclip,
