@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { MobileShell } from "@/components/MobileShell";
 import { AppBottomNav } from "@/components/BottomNav";
-import { Bell, ChevronDown, Phone, MessageCircle, PhoneCall, AlertTriangle, Sparkles, Clock } from "lucide-react";
+import { Bell, ChevronDown, Phone, MessageCircle, PhoneCall, AlertTriangle, Sparkles, Clock, CreditCard, Terminal, Users } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid } from "recharts";
 import logo from "@/assets/go-signal-logo.png";
 import { useUnreadCount } from "@/lib/notifications";
@@ -40,12 +40,12 @@ function Dashboard() {
           </div>
           <Link
             to="/notifications"
-            className="relative w-10 h-10 inline-flex items-center justify-center rounded-full bg-white shadow-sm transition-premium hover:scale-105"
+            className="relative w-10 h-10 inline-flex items-center justify-center rounded-full bg-[var(--surface)] border border-[var(--brand-forest)]/10 dark:border-white/10 shadow-sm transition-premium hover:scale-105"
             aria-label="Notifications"
           >
             <Bell className="w-5 h-5 text-[var(--brand-forest)]" />
             {unread > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold inline-flex items-center justify-center transition-premium animate-fade-up">
+              <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold inline-flex items-center justify-center ring-2 ring-[var(--surface)] transition-premium animate-fade-up">
                 {unread}
               </span>
             )}
@@ -57,19 +57,11 @@ function Dashboard() {
         {/* Smart alert (dynamic) */}
         <SmartAlert mode={alertMode} />
 
-        {/* Demo mode toggle for the alert */}
-        <div className="mt-2 inline-flex p-1 rounded-full bg-[var(--brand-forest)]/5 text-[10px] font-semibold">
-          {(["trial", "api", "lead"] as const).map((m) => (
-            <button
-              key={m}
-              onClick={() => setAlertMode(m)}
-              className={`px-2.5 py-1 rounded-full transition-premium ${
-                alertMode === m ? "bg-white text-[var(--brand-forest)] shadow-sm" : "text-[var(--brand-forest)]/50"
-              }`}
-            >
-              {m === "trial" ? "Trial" : m === "api" ? "API" : "Lead"}
-            </button>
-          ))}
+        {/* Quick-status pills — each routes to its dedicated hub */}
+        <div className="mt-3 grid grid-cols-3 gap-2">
+          <StatusPill to="/subscription" icon={<CreditCard className="w-3.5 h-3.5" />} label="Trial" sub="9 days left" tone="lime" active={alertMode === "trial"} onHover={() => setAlertMode("trial")} />
+          <StatusPill to="/api-credentials" icon={<Terminal className="w-3.5 h-3.5" />} label="API" sub="Live keys" tone="forest" active={alertMode === "api"} onHover={() => setAlertMode("api")} />
+          <StatusPill to="/leads" icon={<Users className="w-3.5 h-3.5" />} label="Lead" sub="3 today" tone="lime" active={alertMode === "lead"} onHover={() => setAlertMode("lead")} />
         </div>
 
         {/* Live traffic card */}
@@ -130,7 +122,7 @@ function TrafficRow({ icon, label, detail, to }: { icon: React.ReactNode; label:
       <Link
         to="/traffic/$id"
         params={{ id: to }}
-        className="flex items-start gap-3 p-2 -mx-2 rounded-xl transition-premium hover:bg-white/70"
+        className="flex items-start gap-3 p-2 -mx-2 rounded-xl transition-premium hover:bg-[var(--brand-forest)]/5 dark:hover:bg-white/5"
       >
         <div className="mt-0.5 w-8 h-8 rounded-full bg-[var(--brand-forest)]/5 text-[var(--brand-forest)] inline-flex items-center justify-center">
           {icon}
@@ -144,13 +136,40 @@ function TrafficRow({ icon, label, detail, to }: { icon: React.ReactNode; label:
   );
 }
 
+function StatusPill({
+  to, icon, label, sub, tone, active, onHover,
+}: {
+  to: "/subscription" | "/api-credentials" | "/leads";
+  icon: React.ReactNode; label: string; sub: string;
+  tone: "lime" | "forest"; active?: boolean; onHover?: () => void;
+}) {
+  const base =
+    tone === "lime"
+      ? "bg-[var(--brand-lime)]/10 border-[var(--brand-lime)]/30 text-[var(--brand-forest)]"
+      : "bg-[var(--surface)] border-[var(--brand-forest)]/10 dark:border-white/10 text-[var(--brand-forest)]";
+  return (
+    <Link
+      to={to}
+      onMouseEnter={onHover}
+      onFocus={onHover}
+      className={`rounded-2xl border p-2.5 transition-premium hover:translate-y-[-1px] ${base} ${active ? "ring-2 ring-[var(--brand-lime)]/40" : ""}`}
+    >
+      <div className="flex items-center gap-1.5">
+        <span className="w-6 h-6 rounded-lg bg-[var(--brand-forest)]/10 inline-flex items-center justify-center">{icon}</span>
+        <span className="text-[11px] font-extrabold uppercase tracking-wider">{label}</span>
+      </div>
+      <div className="mt-1 text-[10px] font-semibold text-[var(--brand-forest)]/60">{sub}</div>
+    </Link>
+  );
+}
+
 function SmartAlert({ mode }: { mode: "trial" | "api" | "lead" }) {
   if (mode === "api") {
     return (
       <Link
         to="/notifications/$id"
         params={{ id: "n7" }}
-        className="mt-3 block rounded-2xl p-4 bg-white border-2 border-red-400/60 shadow-[0_10px_28px_-12px_rgba(239,68,68,0.35)] transition-premium hover:translate-y-[-1px]"
+        className="mt-3 block rounded-2xl p-4 bg-[var(--surface)] border-2 border-red-400/60 shadow-[0_10px_28px_-12px_rgba(239,68,68,0.35)] transition-premium hover:translate-y-[-1px]"
       >
         <div className="flex items-start gap-3">
           <div className="w-9 h-9 rounded-xl bg-red-500/10 text-red-500 inline-flex items-center justify-center">
