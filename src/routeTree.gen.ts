@@ -14,6 +14,7 @@ import { Route as TrafficRouteImport } from './routes/traffic'
 import { Route as SubscriptionRouteImport } from './routes/subscription'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PasswordManagementRouteImport } from './routes/password-management'
 import { Route as PasswordRouteImport } from './routes/password'
 import { Route as OtpRouteImport } from './routes/otp'
 import { Route as NotificationsRouteImport } from './routes/notifications'
@@ -50,6 +51,11 @@ const SignupRoute = SignupRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PasswordManagementRoute = PasswordManagementRouteImport.update({
+  id: '/password-management',
+  path: '/password-management',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PasswordRoute = PasswordRouteImport.update({
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof NotificationsRouteWithChildren
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
+  '/password-management': typeof PasswordManagementRoute
   '/profile': typeof ProfileRoute
   '/signup': typeof SignupRoute
   '/subscription': typeof SubscriptionRoute
@@ -142,6 +149,7 @@ export interface FileRoutesByTo {
   '/notifications': typeof NotificationsRouteWithChildren
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
+  '/password-management': typeof PasswordManagementRoute
   '/profile': typeof ProfileRoute
   '/signup': typeof SignupRoute
   '/subscription': typeof SubscriptionRoute
@@ -162,6 +170,7 @@ export interface FileRoutesById {
   '/notifications': typeof NotificationsRouteWithChildren
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
+  '/password-management': typeof PasswordManagementRoute
   '/profile': typeof ProfileRoute
   '/signup': typeof SignupRoute
   '/subscription': typeof SubscriptionRoute
@@ -183,6 +192,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/otp'
     | '/password'
+    | '/password-management'
     | '/profile'
     | '/signup'
     | '/subscription'
@@ -202,6 +212,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/otp'
     | '/password'
+    | '/password-management'
     | '/profile'
     | '/signup'
     | '/subscription'
@@ -221,6 +232,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/otp'
     | '/password'
+    | '/password-management'
     | '/profile'
     | '/signup'
     | '/subscription'
@@ -241,6 +253,7 @@ export interface RootRouteChildren {
   NotificationsRoute: typeof NotificationsRouteWithChildren
   OtpRoute: typeof OtpRoute
   PasswordRoute: typeof PasswordRoute
+  PasswordManagementRoute: typeof PasswordManagementRoute
   ProfileRoute: typeof ProfileRoute
   SignupRoute: typeof SignupRoute
   SubscriptionRoute: typeof SubscriptionRoute
@@ -284,6 +297,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/password-management': {
+      id: '/password-management'
+      path: '/password-management'
+      fullPath: '/password-management'
+      preLoaderRoute: typeof PasswordManagementRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/password': {
@@ -406,6 +426,7 @@ const rootRouteChildren: RootRouteChildren = {
   NotificationsRoute: NotificationsRouteWithChildren,
   OtpRoute: OtpRoute,
   PasswordRoute: PasswordRoute,
+  PasswordManagementRoute: PasswordManagementRoute,
   ProfileRoute: ProfileRoute,
   SignupRoute: SignupRoute,
   SubscriptionRoute: SubscriptionRoute,

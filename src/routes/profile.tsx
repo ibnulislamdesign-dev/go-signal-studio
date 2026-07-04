@@ -193,9 +193,6 @@ function Profile() {
   const [waOn, setWaOn] = useState(true);
   const [voiceOn, setVoiceOn] = useState(true);
 
-  // password sheet
-  const [pwdSheet, setPwdSheet] = useState<null | "change" | "forgot">(null);
-
   // channels & integration
   const [waModalOpen, setWaModalOpen] = useState(false);
   const [waConnected, setWaConnected] = useState(false);
@@ -418,9 +415,8 @@ function Profile() {
               on={fingerprint} onChange={onFinger}
             />
             <Divider />
-            <button
-              type="button"
-              onClick={() => setPwdSheet("change")}
+            <Link
+              to="/password-management"
               className="w-full flex items-center justify-between py-1 transition-premium hover:translate-x-0.5"
             >
               <div className="flex items-center gap-3">
@@ -428,11 +424,10 @@ function Profile() {
                 <div className="text-sm font-bold text-[var(--brand-forest)] text-left">{t.changePwd}</div>
               </div>
               <ChevronLeft className="w-4 h-4 rotate-180 text-[var(--brand-forest)]/40" />
-            </button>
+            </Link>
             <Divider />
-            <button
-              type="button"
-              onClick={() => setPwdSheet("forgot")}
+            <Link
+              to="/password-management"
               className="w-full flex items-center justify-between py-1 transition-premium hover:translate-x-0.5"
             >
               <div className="flex items-center gap-3">
@@ -440,7 +435,7 @@ function Profile() {
                 <div className="text-sm font-bold text-[var(--brand-forest)] text-left">{t.forgotPwd}</div>
               </div>
               <ChevronLeft className="w-4 h-4 rotate-180 text-[var(--brand-forest)]/40" />
-            </button>
+            </Link>
           </SectionCard>
 
           {/* Channels & Integration */}
@@ -530,11 +525,6 @@ function Profile() {
             )}
           </div>
         </div>
-      )}
-
-      {/* Password sheet */}
-      {pwdSheet && (
-        <PasswordSheet mode={pwdSheet} onClose={() => setPwdSheet(null)} />
       )}
 
       {/* WhatsApp linking modal */}
