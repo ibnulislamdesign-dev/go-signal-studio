@@ -18,6 +18,7 @@ import { Route as PasswordManagementRouteImport } from './routes/password-manage
 import { Route as PasswordRouteImport } from './routes/password'
 import { Route as OtpRouteImport } from './routes/otp'
 import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as LeadsRouteImport } from './routes/leads'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CongratulationsRouteImport } from './routes/congratulations'
 import { Route as BusinessInfoRouteImport } from './routes/business-info'
@@ -72,6 +73,11 @@ const OtpRoute = OtpRouteImport.update({
 const NotificationsRoute = NotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LeadsRoute = LeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -133,6 +139,7 @@ export interface FileRoutesByFullPath {
   '/business-info': typeof BusinessInfoRoute
   '/congratulations': typeof CongratulationsRoute
   '/dashboard': typeof DashboardRoute
+  '/leads': typeof LeadsRoute
   '/notifications': typeof NotificationsRouteWithChildren
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
@@ -154,6 +161,7 @@ export interface FileRoutesByTo {
   '/business-info': typeof BusinessInfoRoute
   '/congratulations': typeof CongratulationsRoute
   '/dashboard': typeof DashboardRoute
+  '/leads': typeof LeadsRoute
   '/notifications': typeof NotificationsRouteWithChildren
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
@@ -176,6 +184,7 @@ export interface FileRoutesById {
   '/business-info': typeof BusinessInfoRoute
   '/congratulations': typeof CongratulationsRoute
   '/dashboard': typeof DashboardRoute
+  '/leads': typeof LeadsRoute
   '/notifications': typeof NotificationsRouteWithChildren
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
@@ -199,6 +208,7 @@ export interface FileRouteTypes {
     | '/business-info'
     | '/congratulations'
     | '/dashboard'
+    | '/leads'
     | '/notifications'
     | '/otp'
     | '/password'
@@ -220,6 +230,7 @@ export interface FileRouteTypes {
     | '/business-info'
     | '/congratulations'
     | '/dashboard'
+    | '/leads'
     | '/notifications'
     | '/otp'
     | '/password'
@@ -241,6 +252,7 @@ export interface FileRouteTypes {
     | '/business-info'
     | '/congratulations'
     | '/dashboard'
+    | '/leads'
     | '/notifications'
     | '/otp'
     | '/password'
@@ -263,6 +275,7 @@ export interface RootRouteChildren {
   BusinessInfoRoute: typeof BusinessInfoRoute
   CongratulationsRoute: typeof CongratulationsRoute
   DashboardRoute: typeof DashboardRoute
+  LeadsRoute: typeof LeadsRoute
   NotificationsRoute: typeof NotificationsRouteWithChildren
   OtpRoute: typeof OtpRoute
   PasswordRoute: typeof PasswordRoute
@@ -338,6 +351,13 @@ declare module '@tanstack/react-router' {
       path: '/notifications'
       fullPath: '/notifications'
       preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/leads': {
+      id: '/leads'
+      path: '/leads'
+      fullPath: '/leads'
+      preLoaderRoute: typeof LeadsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -444,6 +464,7 @@ const rootRouteChildren: RootRouteChildren = {
   BusinessInfoRoute: BusinessInfoRoute,
   CongratulationsRoute: CongratulationsRoute,
   DashboardRoute: DashboardRoute,
+  LeadsRoute: LeadsRoute,
   NotificationsRoute: NotificationsRouteWithChildren,
   OtpRoute: OtpRoute,
   PasswordRoute: PasswordRoute,
