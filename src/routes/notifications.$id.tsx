@@ -84,10 +84,20 @@ function useNotificationAction(n: Notification): PrimaryAction {
     };
   }
 
+  const isVoice = /voice message|voice note|voicemail|transcribed/i.test(`${n.title} ${n.preview} ${n.body}`);
+  if (isVoice && phone) {
+    return {
+      label: `Initiate Call · ${phone}`,
+      icon: <PhoneCall className="w-4 h-4" />,
+      className: "bg-[var(--brand-forest)] text-white hover:scale-[1.01]",
+      onClick: () => { window.location.href = `tel:${phone}`; },
+    };
+  }
+
   if (n.category === "Billing") {
     const isRenewed = /renewed/i.test(n.title);
     return {
-      label: isRenewed ? "Manage billing plan" : "Complete subscription",
+      label: isRenewed ? "Manage billing plan" : "Complete Your Subscription",
       icon: <CreditCard className="w-4 h-4" />,
       className: "bg-gradient-to-r from-[var(--brand-forest)] to-[#00695c] text-white hover:scale-[1.01]",
       onClick: () => go("/subscription"),
@@ -111,7 +121,7 @@ function useNotificationAction(n: Notification): PrimaryAction {
 
   if (n.category === "AI Assistant") {
     return {
-      label: "Open AI Assistant Interface",
+      label: "Open AI Chat",
       icon: <Sparkle className="w-4 h-4" />,
       className: "bg-[var(--brand-forest)] text-white hover:scale-[1.01]",
       onClick: () => go("/assistant"),
