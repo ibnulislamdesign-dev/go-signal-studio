@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WhatsappLinkRouteImport } from './routes/whatsapp-link'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as TrafficRouteImport } from './routes/traffic'
 import { Route as SubscriptionRouteImport } from './routes/subscription'
@@ -30,6 +31,11 @@ import { Route as TrafficIdRouteImport } from './routes/traffic.$id'
 import { Route as NotificationsIdRouteImport } from './routes/notifications.$id'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 
+const WhatsappLinkRoute = WhatsappLinkRouteImport.update({
+  id: '/whatsapp-link',
+  path: '/whatsapp-link',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WelcomeRoute = WelcomeRouteImport.update({
   id: '/welcome',
   path: '/welcome',
@@ -149,6 +155,7 @@ export interface FileRoutesByFullPath {
   '/subscription': typeof SubscriptionRoute
   '/traffic': typeof TrafficRouteWithChildren
   '/welcome': typeof WelcomeRoute
+  '/whatsapp-link': typeof WhatsappLinkRoute
   '/api/chat': typeof ApiChatRoute
   '/notifications/$id': typeof NotificationsIdRoute
   '/traffic/$id': typeof TrafficIdRoute
@@ -171,6 +178,7 @@ export interface FileRoutesByTo {
   '/subscription': typeof SubscriptionRoute
   '/traffic': typeof TrafficRouteWithChildren
   '/welcome': typeof WelcomeRoute
+  '/whatsapp-link': typeof WhatsappLinkRoute
   '/api/chat': typeof ApiChatRoute
   '/notifications/$id': typeof NotificationsIdRoute
   '/traffic/$id': typeof TrafficIdRoute
@@ -194,6 +202,7 @@ export interface FileRoutesById {
   '/subscription': typeof SubscriptionRoute
   '/traffic': typeof TrafficRouteWithChildren
   '/welcome': typeof WelcomeRoute
+  '/whatsapp-link': typeof WhatsappLinkRoute
   '/api/chat': typeof ApiChatRoute
   '/notifications/$id': typeof NotificationsIdRoute
   '/traffic/$id': typeof TrafficIdRoute
@@ -218,6 +227,7 @@ export interface FileRouteTypes {
     | '/subscription'
     | '/traffic'
     | '/welcome'
+    | '/whatsapp-link'
     | '/api/chat'
     | '/notifications/$id'
     | '/traffic/$id'
@@ -240,6 +250,7 @@ export interface FileRouteTypes {
     | '/subscription'
     | '/traffic'
     | '/welcome'
+    | '/whatsapp-link'
     | '/api/chat'
     | '/notifications/$id'
     | '/traffic/$id'
@@ -262,6 +273,7 @@ export interface FileRouteTypes {
     | '/subscription'
     | '/traffic'
     | '/welcome'
+    | '/whatsapp-link'
     | '/api/chat'
     | '/notifications/$id'
     | '/traffic/$id'
@@ -285,11 +297,19 @@ export interface RootRouteChildren {
   SubscriptionRoute: typeof SubscriptionRoute
   TrafficRoute: typeof TrafficRouteWithChildren
   WelcomeRoute: typeof WelcomeRoute
+  WhatsappLinkRoute: typeof WhatsappLinkRoute
   ApiChatRoute: typeof ApiChatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/whatsapp-link': {
+      id: '/whatsapp-link'
+      path: '/whatsapp-link'
+      fullPath: '/whatsapp-link'
+      preLoaderRoute: typeof WhatsappLinkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/welcome': {
       id: '/welcome'
       path: '/welcome'
@@ -474,6 +494,7 @@ const rootRouteChildren: RootRouteChildren = {
   SubscriptionRoute: SubscriptionRoute,
   TrafficRoute: TrafficRouteWithChildren,
   WelcomeRoute: WelcomeRoute,
+  WhatsappLinkRoute: WhatsappLinkRoute,
   ApiChatRoute: ApiChatRoute,
 }
 export const routeTree = rootRouteImport
