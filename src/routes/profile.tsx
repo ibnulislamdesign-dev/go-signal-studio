@@ -3,10 +3,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { MobileShell } from "@/components/MobileShell";
 import { AppBottomNav } from "@/components/BottomNav";
 import {
-  ChevronLeft, Pencil, Check, User, Mail, Phone, Building2, MapPin, Tag,
+  ChevronLeft, Check, User, Mail, Phone, Building2, MapPin, Tag,
   Sun, Moon, Languages, Fingerprint, ScanFace, KeyRound, LifeBuoy,
-  MessageCircle, PhoneCall, X, ShieldCheck, Loader2, Eye, EyeOff,
-  Copy, CheckCircle2, Info, Smartphone, Link2, Camera,
+  MessageCircle, PhoneCall, ShieldCheck, Loader2,
+  Copy, CheckCircle2, Info, Camera,
 } from "lucide-react";
 import { PhoneInput } from "@/components/PhoneInput";
 
@@ -194,11 +194,7 @@ function Profile() {
   const [voiceOn, setVoiceOn] = useState(true);
 
   // channels & integration
-  const [waModalOpen, setWaModalOpen] = useState(false);
   const [waConnected, setWaConnected] = useState(false);
-  const [waPhone, setWaPhone] = useState({ dial: "+234", number: "9040728892" });
-  const [waVerifying, setWaVerifying] = useState(false);
-  const [waVerified, setWaVerified] = useState(false);
 
   const savePersonal = () => { setPersonal(personalDraft); setEditPersonal(false); };
   const cancelPersonal = () => { setPersonalDraft(personal); setEditPersonal(false); };
@@ -441,9 +437,8 @@ function Profile() {
           {/* Channels & Integration */}
           <SectionCard title="Channels & Integration" subtitle="Link your communication lines">
             {/* WhatsApp Integration */}
-            <button
-              type="button"
-              onClick={() => setWaModalOpen(true)}
+            <Link
+              to="/whatsapp-link"
               className="w-full flex items-center justify-between py-1 transition-premium hover:translate-x-0.5"
             >
               <div className="flex items-center gap-3">
@@ -467,10 +462,10 @@ function Profile() {
                 )}
                 <ChevronLeft className="w-4 h-4 rotate-180 text-[var(--brand-forest)]/40" />
               </div>
-            </button>
+            </Link>
             <Divider />
             {/* Inbound Voice Routing */}
-            <div className="rounded-xl bg-[var(--canvas)] border border-[var(--brand-forest)]/10 p-4">
+            <div className="rounded-xl bg-[var(--canvas)] border border-[var(--brand-forest)]/10 dark:border-white/10 p-4">
               <div className="flex items-center gap-2 mb-2">
                 <PhoneCall className="w-4 h-4 text-[var(--brand-forest)]" />
                 <div className="text-sm font-bold text-[var(--brand-forest)]">Inbound Voice Routing</div>
@@ -503,8 +498,8 @@ function Profile() {
 
       {/* Biometric verification modal */}
       {verifying && (
-        <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/40 backdrop-blur-sm animate-fade-up">
-          <div className="w-72 rounded-3xl bg-[var(--surface)] p-6 text-center shadow-2xl border border-white/40">
+        <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-up">
+          <div className="w-72 rounded-3xl bg-[var(--surface)] p-6 text-center shadow-2xl border border-[var(--brand-forest)]/10 dark:border-white/10">
             <div className="mx-auto w-16 h-16 rounded-full bg-[var(--brand-forest)]/5 inline-flex items-center justify-center mb-3">
               {verifying.phase === "running" ? (
                 <Loader2 className="w-8 h-8 text-[var(--brand-forest)] animate-spin" />
@@ -526,16 +521,6 @@ function Profile() {
           </div>
         </div>
       )}
-
-      {/* WhatsApp linking modal */}
-      <WhatsAppModal
-        open={waModalOpen}
-        onClose={() => setWaModalOpen(false)}
-        waConnected={waConnected}
-        setWaConnected={setWaConnected}
-        waPhone={waPhone}
-        setWaPhone={setWaPhone}
-      />
     </MobileShell>
   );
 }
