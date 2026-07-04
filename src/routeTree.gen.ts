@@ -23,6 +23,7 @@ import { Route as CongratulationsRouteImport } from './routes/congratulations'
 import { Route as BusinessInfoRouteImport } from './routes/business-info'
 import { Route as BusinessCategoryRouteImport } from './routes/business-category'
 import { Route as AssistantRouteImport } from './routes/assistant'
+import { Route as ApiCredentialsRouteImport } from './routes/api-credentials'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TrafficIdRouteImport } from './routes/traffic.$id'
 import { Route as NotificationsIdRouteImport } from './routes/notifications.$id'
@@ -98,6 +99,11 @@ const AssistantRoute = AssistantRouteImport.update({
   path: '/assistant',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCredentialsRoute = ApiCredentialsRouteImport.update({
+  id: '/api-credentials',
+  path: '/api-credentials',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -121,6 +127,7 @@ const ApiChatRoute = ApiChatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api-credentials': typeof ApiCredentialsRoute
   '/assistant': typeof AssistantRoute
   '/business-category': typeof BusinessCategoryRoute
   '/business-info': typeof BusinessInfoRoute
@@ -141,6 +148,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api-credentials': typeof ApiCredentialsRoute
   '/assistant': typeof AssistantRoute
   '/business-category': typeof BusinessCategoryRoute
   '/business-info': typeof BusinessInfoRoute
@@ -162,6 +170,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api-credentials': typeof ApiCredentialsRoute
   '/assistant': typeof AssistantRoute
   '/business-category': typeof BusinessCategoryRoute
   '/business-info': typeof BusinessInfoRoute
@@ -184,6 +193,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/api-credentials'
     | '/assistant'
     | '/business-category'
     | '/business-info'
@@ -204,6 +214,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/api-credentials'
     | '/assistant'
     | '/business-category'
     | '/business-info'
@@ -224,6 +235,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/api-credentials'
     | '/assistant'
     | '/business-category'
     | '/business-info'
@@ -245,6 +257,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiCredentialsRoute: typeof ApiCredentialsRoute
   AssistantRoute: typeof AssistantRoute
   BusinessCategoryRoute: typeof BusinessCategoryRoute
   BusinessInfoRoute: typeof BusinessInfoRoute
@@ -362,6 +375,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AssistantRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api-credentials': {
+      id: '/api-credentials'
+      path: '/api-credentials'
+      fullPath: '/api-credentials'
+      preLoaderRoute: typeof ApiCredentialsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -418,6 +438,7 @@ const TrafficRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiCredentialsRoute: ApiCredentialsRoute,
   AssistantRoute: AssistantRoute,
   BusinessCategoryRoute: BusinessCategoryRoute,
   BusinessInfoRoute: BusinessInfoRoute,
@@ -437,13 +458,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
