@@ -91,22 +91,29 @@ function Dashboard() {
         </div>
 
         {/* Insights card */}
-        <div className="mt-3 rounded-2xl bg-white p-4 shadow-[var(--shadow-card)]">
+        <div className="mt-3 rounded-2xl bg-[var(--surface)] p-4 shadow-[var(--shadow-card)] border border-[var(--brand-forest)]/5 dark:border-white/5">
           <div className="text-base font-bold text-[var(--brand-forest)]">Monthly Call Insights</div>
           <div className="text-xs font-semibold text-[var(--brand-lime)]">1,240 Total Calls Handled</div>
           <div className="mt-3 h-40">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData} margin={{ top: 6, right: 6, bottom: 0, left: -18 }}>
-                <CartesianGrid stroke="#eef2f3" vertical={false} />
-                <XAxis dataKey="d" tick={{ fontSize: 10, fill: "#5b6b6a" }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: "#5b6b6a" }} axisLine={false} tickLine={false} ticks={[10, 20, 30, 40, 50]} />
+                <CartesianGrid stroke="var(--color-border)" vertical={false} />
+                <XAxis dataKey="d" tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }} axisLine={false} tickLine={false} ticks={[10, 20, 30, 40, 50]} />
                 <Tooltip
-                  contentStyle={{ borderRadius: 10, border: "1px solid #e6ebec", fontSize: 12 }}
+                  contentStyle={{
+                    borderRadius: 10,
+                    border: "1px solid var(--color-border)",
+                    background: "var(--color-popover)",
+                    color: "var(--color-popover-foreground)",
+                    fontSize: 12,
+                  }}
                   labelStyle={{ color: "var(--brand-forest)", fontWeight: 600 }}
+                  itemStyle={{ color: "var(--color-popover-foreground)" }}
                 />
                 <Line
-                  type="monotone" dataKey="v" stroke="#2563eb" strokeWidth={2.5} dot={false}
-                  activeDot={{ r: 5, fill: "#2563eb", stroke: "#fff", strokeWidth: 2 }}
+                  type="monotone" dataKey="v" stroke="var(--brand-lime)" strokeWidth={2.5} dot={false}
+                  activeDot={{ r: 5, fill: "var(--brand-lime)", stroke: "var(--surface)", strokeWidth: 2 }}
                 />
               </LineChart>
             </ResponsiveContainer>
