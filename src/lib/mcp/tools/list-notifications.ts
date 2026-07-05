@@ -1,6 +1,6 @@
 import { defineTool } from "@lovable.dev/mcp-js";
 import { z } from "zod";
-import { notifications } from "@/lib/notifications";
+import { NOTIFICATIONS, type Notification } from "@/lib/notifications";
 
 export default defineTool({
   name: "list_notifications",
@@ -12,7 +12,7 @@ export default defineTool({
   },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: ({ limit, unreadOnly }) => {
-    const filtered = unreadOnly ? notifications.filter((n) => n.unread) : notifications;
+    const filtered = unreadOnly ? NOTIFICATIONS.filter((n: Notification) => n.unread) : NOTIFICATIONS;
     const sliced = filtered.slice(0, limit ?? 10);
     return {
       content: [{ type: "text", text: JSON.stringify(sliced, null, 2) }],
