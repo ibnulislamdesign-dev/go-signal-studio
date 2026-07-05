@@ -1,0 +1,109 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "go-signal-mcp",
+      "version": "0.1.0",
+      "title": "Go Signal MCP"
+    },
+    "tools": [
+      {
+        "name": "list_notifications",
+        "title": "List notifications",
+        "description": "List recent Go Signal notifications (AI summaries, WhatsApp activity, missed calls, billing, system).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "limit": {
+              "description": "Max notifications to return (default 10).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            },
+            "unreadOnly": {
+              "description": "If true, only return unread notifications.",
+              "type": "boolean"
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_traffic",
+        "title": "List call & message traffic",
+        "description": "List recent Go Signal traffic logs (live calls, WhatsApp threads, missed calls) with status and summaries.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "channel": {
+              "description": "Filter by channel.",
+              "type": "string",
+              "enum": [
+                "call",
+                "whatsapp",
+                "missed"
+              ]
+            },
+            "status": {
+              "description": "Filter by status.",
+              "type": "string",
+              "enum": [
+                "Query",
+                "Pending",
+                "Booked",
+                "Closed"
+              ]
+            },
+            "liveOnly": {
+              "description": "If true, only return conversations currently live.",
+              "type": "boolean"
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_call_transcript",
+        "title": "Get call transcript",
+        "description": "Fetch the full AI/caller transcript for a specific traffic log by id (e.g. 'l1').",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Traffic log id, e.g. 'l1'."
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

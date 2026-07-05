@@ -19,6 +19,7 @@ import { Route as PasswordManagementRouteImport } from './routes/password-manage
 import { Route as PasswordRouteImport } from './routes/password'
 import { Route as OtpRouteImport } from './routes/otp'
 import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as LeadsRouteImport } from './routes/leads'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CongratulationsRouteImport } from './routes/congratulations'
@@ -30,6 +31,9 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as TrafficIdRouteImport } from './routes/traffic.$id'
 import { Route as NotificationsIdRouteImport } from './routes/notifications.$id'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 
 const WhatsappLinkRoute = WhatsappLinkRouteImport.update({
   id: '/whatsapp-link',
@@ -79,6 +83,11 @@ const OtpRoute = OtpRouteImport.update({
 const NotificationsRoute = NotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LeadsRoute = LeadsRouteImport.update({
@@ -136,6 +145,24 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -146,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/congratulations': typeof CongratulationsRoute
   '/dashboard': typeof DashboardRoute
   '/leads': typeof LeadsRoute
+  '/mcp': typeof McpRoute
   '/notifications': typeof NotificationsRouteWithChildren
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
@@ -156,9 +184,12 @@ export interface FileRoutesByFullPath {
   '/traffic': typeof TrafficRouteWithChildren
   '/welcome': typeof WelcomeRoute
   '/whatsapp-link': typeof WhatsappLinkRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/api/chat': typeof ApiChatRoute
   '/notifications/$id': typeof NotificationsIdRoute
   '/traffic/$id': typeof TrafficIdRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -169,6 +200,7 @@ export interface FileRoutesByTo {
   '/congratulations': typeof CongratulationsRoute
   '/dashboard': typeof DashboardRoute
   '/leads': typeof LeadsRoute
+  '/mcp': typeof McpRoute
   '/notifications': typeof NotificationsRouteWithChildren
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
@@ -179,9 +211,12 @@ export interface FileRoutesByTo {
   '/traffic': typeof TrafficRouteWithChildren
   '/welcome': typeof WelcomeRoute
   '/whatsapp-link': typeof WhatsappLinkRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/api/chat': typeof ApiChatRoute
   '/notifications/$id': typeof NotificationsIdRoute
   '/traffic/$id': typeof TrafficIdRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -193,6 +228,7 @@ export interface FileRoutesById {
   '/congratulations': typeof CongratulationsRoute
   '/dashboard': typeof DashboardRoute
   '/leads': typeof LeadsRoute
+  '/mcp': typeof McpRoute
   '/notifications': typeof NotificationsRouteWithChildren
   '/otp': typeof OtpRoute
   '/password': typeof PasswordRoute
@@ -203,9 +239,12 @@ export interface FileRoutesById {
   '/traffic': typeof TrafficRouteWithChildren
   '/welcome': typeof WelcomeRoute
   '/whatsapp-link': typeof WhatsappLinkRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/api/chat': typeof ApiChatRoute
   '/notifications/$id': typeof NotificationsIdRoute
   '/traffic/$id': typeof TrafficIdRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -218,6 +257,7 @@ export interface FileRouteTypes {
     | '/congratulations'
     | '/dashboard'
     | '/leads'
+    | '/mcp'
     | '/notifications'
     | '/otp'
     | '/password'
@@ -228,9 +268,12 @@ export interface FileRouteTypes {
     | '/traffic'
     | '/welcome'
     | '/whatsapp-link'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/api/chat'
     | '/notifications/$id'
     | '/traffic/$id'
+    | '/.mcp/invoke-tool/$tool'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -241,6 +284,7 @@ export interface FileRouteTypes {
     | '/congratulations'
     | '/dashboard'
     | '/leads'
+    | '/mcp'
     | '/notifications'
     | '/otp'
     | '/password'
@@ -251,9 +295,12 @@ export interface FileRouteTypes {
     | '/traffic'
     | '/welcome'
     | '/whatsapp-link'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/api/chat'
     | '/notifications/$id'
     | '/traffic/$id'
+    | '/.mcp/invoke-tool/$tool'
   id:
     | '__root__'
     | '/'
@@ -264,6 +311,7 @@ export interface FileRouteTypes {
     | '/congratulations'
     | '/dashboard'
     | '/leads'
+    | '/mcp'
     | '/notifications'
     | '/otp'
     | '/password'
@@ -274,9 +322,12 @@ export interface FileRouteTypes {
     | '/traffic'
     | '/welcome'
     | '/whatsapp-link'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/api/chat'
     | '/notifications/$id'
     | '/traffic/$id'
+    | '/.mcp/invoke-tool/$tool'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -288,6 +339,7 @@ export interface RootRouteChildren {
   CongratulationsRoute: typeof CongratulationsRoute
   DashboardRoute: typeof DashboardRoute
   LeadsRoute: typeof LeadsRoute
+  McpRoute: typeof McpRoute
   NotificationsRoute: typeof NotificationsRouteWithChildren
   OtpRoute: typeof OtpRoute
   PasswordRoute: typeof PasswordRoute
@@ -298,7 +350,10 @@ export interface RootRouteChildren {
   TrafficRoute: typeof TrafficRouteWithChildren
   WelcomeRoute: typeof WelcomeRoute
   WhatsappLinkRoute: typeof WhatsappLinkRoute
+  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   ApiChatRoute: typeof ApiChatRoute
+  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -371,6 +426,13 @@ declare module '@tanstack/react-router' {
       path: '/notifications'
       fullPath: '/notifications'
       preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/leads': {
@@ -450,6 +512,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -485,6 +568,7 @@ const rootRouteChildren: RootRouteChildren = {
   CongratulationsRoute: CongratulationsRoute,
   DashboardRoute: DashboardRoute,
   LeadsRoute: LeadsRoute,
+  McpRoute: McpRoute,
   NotificationsRoute: NotificationsRouteWithChildren,
   OtpRoute: OtpRoute,
   PasswordRoute: PasswordRoute,
@@ -495,8 +579,22 @@ const rootRouteChildren: RootRouteChildren = {
   TrafficRoute: TrafficRouteWithChildren,
   WelcomeRoute: WelcomeRoute,
   WhatsappLinkRoute: WhatsappLinkRoute,
+  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   ApiChatRoute: ApiChatRoute,
+  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
