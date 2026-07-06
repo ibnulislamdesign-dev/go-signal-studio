@@ -25,6 +25,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CongratulationsRouteImport } from './routes/congratulations'
 import { Route as BusinessInfoRouteImport } from './routes/business-info'
 import { Route as BusinessCategoryRouteImport } from './routes/business-category'
+import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as ApiCredentialsRouteImport } from './routes/api-credentials'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TrafficIdRouteImport } from './routes/traffic.$id'
@@ -114,6 +115,11 @@ const BusinessCategoryRoute = BusinessCategoryRouteImport.update({
   path: '/business-category',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AssistantRoute = AssistantRouteImport.update({
+  id: '/assistant',
+  path: '/assistant',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCredentialsRoute = ApiCredentialsRouteImport.update({
   id: '/api-credentials',
   path: '/api-credentials',
@@ -161,6 +167,7 @@ const Char91DotmcpChar93InvokeToolToolRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api-credentials': typeof ApiCredentialsRoute
+  '/assistant': typeof AssistantRoute
   '/business-category': typeof BusinessCategoryRoute
   '/business-info': typeof BusinessInfoRoute
   '/congratulations': typeof CongratulationsRoute
@@ -187,6 +194,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api-credentials': typeof ApiCredentialsRoute
+  '/assistant': typeof AssistantRoute
   '/business-category': typeof BusinessCategoryRoute
   '/business-info': typeof BusinessInfoRoute
   '/congratulations': typeof CongratulationsRoute
@@ -214,6 +222,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/api-credentials': typeof ApiCredentialsRoute
+  '/assistant': typeof AssistantRoute
   '/business-category': typeof BusinessCategoryRoute
   '/business-info': typeof BusinessInfoRoute
   '/congratulations': typeof CongratulationsRoute
@@ -242,6 +251,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/api-credentials'
+    | '/assistant'
     | '/business-category'
     | '/business-info'
     | '/congratulations'
@@ -268,6 +278,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/api-credentials'
+    | '/assistant'
     | '/business-category'
     | '/business-info'
     | '/congratulations'
@@ -294,6 +305,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/api-credentials'
+    | '/assistant'
     | '/business-category'
     | '/business-info'
     | '/congratulations'
@@ -321,6 +333,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiCredentialsRoute: typeof ApiCredentialsRoute
+  AssistantRoute: typeof AssistantRoute
   BusinessCategoryRoute: typeof BusinessCategoryRoute
   BusinessInfoRoute: typeof BusinessInfoRoute
   CongratulationsRoute: typeof CongratulationsRoute
@@ -457,6 +470,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BusinessCategoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/assistant': {
+      id: '/assistant'
+      path: '/assistant'
+      fullPath: '/assistant'
+      preLoaderRoute: typeof AssistantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api-credentials': {
       id: '/api-credentials'
       path: '/api-credentials'
@@ -542,6 +562,7 @@ const TrafficRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiCredentialsRoute: ApiCredentialsRoute,
+  AssistantRoute: AssistantRoute,
   BusinessCategoryRoute: BusinessCategoryRoute,
   BusinessInfoRoute: BusinessInfoRoute,
   CongratulationsRoute: CongratulationsRoute,
