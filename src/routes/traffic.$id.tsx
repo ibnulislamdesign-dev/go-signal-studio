@@ -23,10 +23,10 @@ import {
 import { findTraffic, type TranscriptLine, type TrafficLog } from "@/lib/traffic";
 
 export const Route = createFileRoute("/traffic/$id")({
-  validateSearch: (s: Record<string, unknown>) => {
+  validateSearch: (s: Record<string, unknown>): { msg?: number } => {
     const raw = s.msg;
     const n = typeof raw === "number" ? raw : typeof raw === "string" ? parseInt(raw, 10) : NaN;
-    return { msg: Number.isFinite(n) ? n : undefined };
+    return Number.isFinite(n) ? { msg: n } : {};
   },
   loader: ({ params }) => {
     const log = findTraffic(params.id);
