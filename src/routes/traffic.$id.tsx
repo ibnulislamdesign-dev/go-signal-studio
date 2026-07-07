@@ -1,8 +1,26 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { MobileShell, StatusBar, HomeIndicator } from "@/components/MobileShell";
-import { ChevronLeft, PhoneCall, MessageCircle, Mic, Phone } from "lucide-react";
-import { findTraffic, type TranscriptLine } from "@/lib/traffic";
+import {
+  ChevronLeft,
+  PhoneCall,
+  MessageCircle,
+  Mic,
+  MicOff,
+  Phone,
+  PhoneOff,
+  Grid3x3,
+  Volume2,
+  UserPlus,
+  Video,
+  User,
+  Hand,
+  Send,
+  Paperclip,
+  Smile,
+  Bot,
+} from "lucide-react";
+import { findTraffic, type TranscriptLine, type TrafficLog } from "@/lib/traffic";
 
 export const Route = createFileRoute("/traffic/$id")({
   validateSearch: (s: Record<string, unknown>) => {
@@ -48,6 +66,17 @@ export const Route = createFileRoute("/traffic/$id")({
 function TrafficDetail() {
   const { log } = Route.useLoaderData();
   const { msg } = Route.useSearch();
+
+  if (log.channel === "whatsapp") {
+    return <WhatsAppView log={log} />;
+  }
+  if (log.channel === "call") {
+    return <InCallView log={log} />;
+  }
+  return <LegacyView log={log} msg={msg} />;
+}
+
+function LegacyView({ log, msg }: { log: TrafficLog; msg?: number }) {
   return (
     <MobileShell>
       <StatusBar />
@@ -189,5 +218,320 @@ function ChatThread({ lines, focusIndex }: { lines: TranscriptLine[]; focusIndex
         );
       })}
     </div>
+  );
+}
+
+function formatTime(sec: number) {
+  const m = Math.floor(sec / 60).toString().padStart(2, "0");
+  const s = Math.floor(sec % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
+}
+
+function initialsFrom(name?: string, number?: string) {
+  if (name) {
+    const parts = name.split(/\s+/).filter(Boolean);
+    return (parts[0]?.[0] ?? "") + (parts[1]?.[0] ?? "");
+  }
+  return number?.slice(-2) ?? "GS";
+}
+
+function InCallView({ log }: { log: TrafficLog }) {
+  const [seconds, setSeconds] = useState(log.durationSec ?? 0);
+  const [muted, setMuted] = useState(false);
+  const [showKeypad, setShowKeypad] = useState(false);
+  const [speakerOpen, setSpeakerOpen] = useState(false);
+  const [speakerOn, setSpeakerOn] = useState(true);
+  const [liveMode, setLiveMode] = useState(false);
+  const [ended, setEnded] = useState(false);
+
+  useEffect(() => {
+    if (ended) return;
+    const id = setInterval(() => setSeconds((s) => s + 1), 1000);
+    return () => clearInterval(id);
+  }, [ended]);
+
+  const displayName = log.customer ?? log.number;
+
+  return (
+    <MobileShell>
+      <div className="relative min-h-full h-full w-full overflow-hidden text-white">
+        {/* Blurred backdrop */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0b1f1a] via-[#0e2a24] to-[#04120f]" />
+        <div className="absolute inset-0 opacity-40" style={{
+          background:
+            "radial-gradient(60% 40% at 20% 10%, rgba(139,195,74,0.35), transparent 60%), radial-gradient(50% 40% at 90% 90%, rgba(0,150,136,0.45), transparent 60%)",
+        }} />
+        <div className="absolute inset-0 backdrop-blur-3xl" />
+
+        <div className="relative z-10 flex flex-col h-full min-h-[100dvh] md:min-h-[844px] px-6 pt-10 pb-8">
+          {/* Top bar */}
+          <div className="flex items-center justify-between">
+            <Link
+              to="/traffic"
+              className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/15 transition-premium"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </Link>
+            <span
+              className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full backdrop-blur-md ${
+                liveMode
+                  ? "bg-red-500/25 text-red-200 border border-red-400/40"
+                  : "bg-white/10 text-white/85 border border-white/15"
+              }`}
+            >
+              <span className={`w-1.5 h-1.5 rounded-full ${liveMode ? "bg-red-400 animate-pulse" : "bg-[var(--brand-lime)]"}`} />
+              {liveMode ? "Live Mode" : "AI Speaking"}
+            </span>
+            <span className="w-10" />
+          </div>
+
+          {/* Avatar + name */}
+          <div className="flex-1 flex flex-col items-center justify-center text-center">
+            <div className="relative">
+              <div className="absolute inset-0 rounded-full bg-[var(--brand-lime)]/25 blur-2xl scale-125" />
+              <div className="relative w-32 h-32 rounded-full bg-white/10 backdrop-blur-md border border-white/15 flex items-center justify-center text-4xl font-extrabold tracking-wide">
+                {initialsFrom(log.customer, log.number).toUpperCase()}
+              </div>
+            </div>
+            <h1 className="mt-6 text-2xl font-bold">{displayName}</h1>
+            <p className="mt-1 text-sm text-white/60">{log.number}</p>
+            <p className="mt-3 text-lg font-mono tabular-nums text-white/85">
+              {ended ? "Call ended" : formatTime(seconds)}
+            </p>
+          </div>
+
+          {/* 6-button grid */}
+          <div className="grid grid-cols-3 gap-y-6 gap-x-2 mt-6 mb-8">
+            <CallAction label={muted ? "Unmute" : "Mute"} active={muted} onClick={() => setMuted((m) => !m)}>
+              {muted ? <MicOff className="w-6 h-6" /> : <Mic className="w-6 h-6" />}
+            </CallAction>
+            <CallAction label="Keypad" active={showKeypad} onClick={() => setShowKeypad((v) => !v)}>
+              <Grid3x3 className="w-6 h-6" />
+            </CallAction>
+            <div className="relative flex flex-col items-center">
+              <CallAction
+                label={speakerOn ? "Speaker" : "Earpiece"}
+                active={speakerOpen || speakerOn}
+                onClick={() => setSpeakerOpen((v) => !v)}
+              >
+                <Volume2 className="w-6 h-6" />
+              </CallAction>
+              {speakerOpen && (
+                <div className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 w-56 rounded-2xl bg-white/15 backdrop-blur-2xl border border-white/25 shadow-2xl p-1.5 z-20 animate-fade-up">
+                  <button
+                    type="button"
+                    onClick={() => { setSpeakerOn((v) => !v); setSpeakerOpen(false); }}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 text-left transition-premium"
+                  >
+                    <Volume2 className="w-4 h-4 text-[var(--brand-lime)]" />
+                    <div className="flex-1">
+                      <div className="text-sm font-semibold">Speaker Audio</div>
+                      <div className="text-[10px] text-white/60">{speakerOn ? "On" : "Off"} · route to loudspeaker</div>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setLiveMode(true); setSpeakerOpen(false); }}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 text-left transition-premium"
+                  >
+                    <Hand className="w-4 h-4 text-red-300" />
+                    <div className="flex-1">
+                      <div className="text-sm font-semibold">Take Over Live</div>
+                      <div className="text-[10px] text-white/60">Intercept and speak to caller</div>
+                    </div>
+                  </button>
+                </div>
+              )}
+            </div>
+            <CallAction label="Add call">
+              <UserPlus className="w-6 h-6" />
+            </CallAction>
+            <CallAction label="FaceTime">
+              <Video className="w-6 h-6" />
+            </CallAction>
+            <CallAction label="Contacts">
+              <User className="w-6 h-6" />
+            </CallAction>
+          </div>
+
+          {/* End call */}
+          <div className="flex items-center justify-center pb-2">
+            <button
+              type="button"
+              onClick={() => setEnded(true)}
+              className="relative w-16 h-16 rounded-full bg-red-600 hover:bg-red-500 active:scale-95 transition-all flex items-center justify-center shadow-[0_10px_40px_-6px_rgba(220,38,38,0.75)]"
+              aria-label="End call"
+            >
+              <span className="absolute inset-0 rounded-full bg-red-500/50 blur-xl -z-10" />
+              <PhoneOff className="w-7 h-7" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </MobileShell>
+  );
+}
+
+function CallAction({
+  label,
+  children,
+  active,
+  onClick,
+}: {
+  label: string;
+  children: React.ReactNode;
+  active?: boolean;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex flex-col items-center gap-2 group"
+    >
+      <span
+        className={`w-16 h-16 rounded-full backdrop-blur-md border flex items-center justify-center transition-premium ${
+          active
+            ? "bg-white text-[var(--brand-forest)] border-white shadow-lg"
+            : "bg-white/10 text-white border-white/15 group-hover:bg-white/15"
+        }`}
+      >
+        {children}
+      </span>
+      <span className="text-[11px] font-medium text-white/85">{label}</span>
+    </button>
+  );
+}
+
+/* -------- WhatsApp chat view -------- */
+
+type ChatMsg = { id: string; from: "them" | "me" | "ai"; text: string; t: string };
+
+function WhatsAppView({ log }: { log: TrafficLog }) {
+  const seed = useMemo<ChatMsg[]>(
+    () =>
+      log.transcript.map((l, i) => ({
+        id: `s${i}`,
+        from: l.speaker === "AI" ? "ai" : "them",
+        text: l.text,
+        t: l.t === "—" ? "" : l.t,
+      })),
+    [log.transcript],
+  );
+  const [messages, setMessages] = useState<ChatMsg[]>(seed);
+  const [draft, setDraft] = useState("");
+  const [aiAuto, setAiAuto] = useState(true);
+  const endRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages.length]);
+
+  const send = () => {
+    const text = draft.trim();
+    if (!text) return;
+    setMessages((prev) => [
+      ...prev,
+      { id: `m${Date.now()}`, from: "me", text, t: "now" },
+    ]);
+    setDraft("");
+  };
+
+  return (
+    <MobileShell>
+      <div className="min-h-full h-full flex flex-col bg-[#e5ddd5] dark:bg-[#0b141a] text-slate-900 dark:text-slate-100">
+        {/* Header */}
+        <div className="sticky top-0 z-10 bg-[#075e54] text-white px-3 py-2.5 flex items-center gap-2 shadow-md">
+          <Link to="/traffic" className="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-white/10 transition-premium">
+            <ChevronLeft className="w-5 h-5" />
+          </Link>
+          <div className="w-9 h-9 rounded-full bg-[#25D366]/25 flex items-center justify-center text-sm font-bold">
+            {initialsFrom(log.customer, log.number).toUpperCase()}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-semibold truncate">{log.customer ?? log.number}</div>
+            <div className="text-[11px] text-white/70 truncate">{log.number} · online</div>
+          </div>
+          <MessageCircle className="w-5 h-5 opacity-80" />
+        </div>
+
+        {/* AI Auto-Reply toggle bar */}
+        <div className="px-4 py-2.5 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3">
+          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${aiAuto ? "bg-[var(--brand-lime)]/20 text-[var(--brand-lime)]" : "bg-slate-200 dark:bg-slate-800 text-slate-500"}`}>
+            <Bot className="w-4 h-4" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-semibold">AI Auto-Reply</div>
+            <div className="text-[11px] text-slate-500 dark:text-slate-400">
+              {aiAuto ? "AI is handling this thread automatically" : "Manual mode — replies won't be sent by AI"}
+            </div>
+          </div>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={aiAuto}
+            onClick={() => setAiAuto((v) => !v)}
+            className={`relative w-11 h-6 rounded-full transition-colors ${aiAuto ? "bg-[var(--brand-lime)]" : "bg-slate-300 dark:bg-slate-700"}`}
+          >
+            <span
+              className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${aiAuto ? "translate-x-5" : "translate-x-0"}`}
+            />
+          </button>
+        </div>
+
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-1.5">
+          {messages.map((m) => {
+            const mine = m.from === "me" || (m.from === "ai" && aiAuto);
+            const isAi = m.from === "ai";
+            return (
+              <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
+                <div
+                  className={`max-w-[78%] px-3 py-2 rounded-lg text-sm leading-relaxed shadow-sm ${
+                    mine
+                      ? "bg-[#dcf8c6] dark:bg-[#005c4b] text-slate-900 dark:text-slate-50 rounded-br-none"
+                      : "bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-50 rounded-bl-none"
+                  }`}
+                >
+                  {isAi && (
+                    <div className="text-[9px] uppercase tracking-wider font-bold text-[var(--brand-lime)] mb-0.5 flex items-center gap-1">
+                      <Bot className="w-2.5 h-2.5" /> AI Reply
+                    </div>
+                  )}
+                  <div>{m.text}</div>
+                  {m.t && <div className="text-[9px] text-slate-500 dark:text-slate-400 text-right mt-0.5">{m.t}</div>}
+                </div>
+              </div>
+            );
+          })}
+          <div ref={endRef} />
+        </div>
+
+        {/* Composer */}
+        <div className="p-2 bg-[#f0f0f0] dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 flex items-center gap-1.5">
+          <button type="button" className="w-9 h-9 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-800">
+            <Smile className="w-5 h-5" />
+          </button>
+          <button type="button" className="w-9 h-9 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-800">
+            <Paperclip className="w-5 h-5" />
+          </button>
+          <input
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") send(); }}
+            placeholder={aiAuto ? "Type to override AI…" : "Type a message"}
+            className="flex-1 h-10 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-4 text-sm outline-none focus:border-[var(--brand-lime)]"
+          />
+          <button
+            type="button"
+            onClick={send}
+            disabled={!draft.trim()}
+            className="w-10 h-10 rounded-full bg-[#25D366] text-white flex items-center justify-center disabled:opacity-50"
+          >
+            <Send className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    </MobileShell>
   );
 }
