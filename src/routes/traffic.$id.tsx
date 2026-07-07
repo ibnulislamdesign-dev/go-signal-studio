@@ -1,8 +1,26 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { MobileShell, StatusBar, HomeIndicator } from "@/components/MobileShell";
-import { ChevronLeft, PhoneCall, MessageCircle, Mic, Phone } from "lucide-react";
-import { findTraffic, type TranscriptLine } from "@/lib/traffic";
+import {
+  ChevronLeft,
+  PhoneCall,
+  MessageCircle,
+  Mic,
+  MicOff,
+  Phone,
+  PhoneOff,
+  Grid3x3,
+  Volume2,
+  UserPlus,
+  Video,
+  User,
+  Hand,
+  Send,
+  Paperclip,
+  Smile,
+  Bot,
+} from "lucide-react";
+import { findTraffic, type TranscriptLine, type TrafficLog } from "@/lib/traffic";
 
 export const Route = createFileRoute("/traffic/$id")({
   validateSearch: (s: Record<string, unknown>) => {
@@ -48,6 +66,17 @@ export const Route = createFileRoute("/traffic/$id")({
 function TrafficDetail() {
   const { log } = Route.useLoaderData();
   const { msg } = Route.useSearch();
+
+  if (log.channel === "whatsapp") {
+    return <WhatsAppView log={log} />;
+  }
+  if (log.channel === "call") {
+    return <InCallView log={log} />;
+  }
+  return <LegacyView log={log} msg={msg} />;
+}
+
+function LegacyView({ log, msg }: { log: TrafficLog; msg?: number }) {
   return (
     <MobileShell>
       <StatusBar />
