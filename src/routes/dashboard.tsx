@@ -1,11 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MobileShell } from "@/components/MobileShell";
 import { AppBottomNav } from "@/components/BottomNav";
-import { Bell, ChevronDown, Phone, MessageCircle, PhoneCall, AlertTriangle, Sparkles, Clock, CreditCard, Terminal, Users } from "lucide-react";
+import { Bell, ChevronDown, Phone, MessageCircle, PhoneCall, PhoneOff, AlertTriangle, Sparkles, Clock, CreditCard, Terminal, Users } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid } from "recharts";
 import logo from "@/assets/go-signal-logo.png";
 import { useUnreadCount } from "@/lib/notifications";
+import { useNavigate } from "@tanstack/react-router";
+import { TRAFFIC } from "@/lib/traffic";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -28,6 +30,7 @@ function Dashboard() {
   const unread = useUnreadCount();
   return (
     <MobileShell bottomNav={<AppBottomNav active="home" />}>
+      <IncomingCallOverlay />
       <div className="px-5 pt-4 animate-fade-up">
         {/* Header */}
         <div className="flex items-center justify-between">
