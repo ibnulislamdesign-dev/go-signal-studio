@@ -212,7 +212,27 @@ function SmartAlert({ mode }: { mode: "trial" | "api" | "lead" }) {
     );
   }
 
-function IncomingCallOverlay() {
+  return (
+    <Link
+      to="/notifications/$id"
+      params={{ id: "n4" }}
+      className="mt-3 block rounded-2xl p-4 bg-gradient-to-br from-[var(--brand-lime)] to-[#7cb342] text-white shadow-[0_14px_36px_-12px_rgba(139,195,74,0.8)] transition-premium hover:translate-y-[-1px] active:scale-[0.99]"
+    >
+      <div className="flex items-start gap-3">
+        <div className="w-9 h-9 rounded-xl bg-white/20 inline-flex items-center justify-center">
+          <Clock className="w-5 h-5" />
+        </div>
+        <div className="flex-1">
+          <div className="text-sm font-extrabold">Complete your setup</div>
+          <p className="mt-0.5 text-xs text-white/90 leading-relaxed">
+            Your 14-day free trial ends June 13th. Subscribe to keep your AI assistant active.
+          </p>
+        </div>
+        <ChevronDown className="w-4 h-4 -rotate-90 mt-1" />
+      </div>
+    </Link>
+  );
+}function IncomingCallOverlay() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const liveCall = TRAFFIC.find((t) => t.live && t.channel === "call");
@@ -281,26 +301,5 @@ function IncomingCallOverlay() {
         </button>
       </div>
     </div>
-  );
-}
-  return (
-    <Link
-      to="/notifications/$id"
-      params={{ id: "n4" }}
-      className="mt-3 block rounded-2xl p-4 bg-gradient-to-br from-[var(--brand-lime)] to-[#7cb342] text-white shadow-[0_14px_36px_-12px_rgba(139,195,74,0.8)] transition-premium hover:translate-y-[-1px] active:scale-[0.99]"
-    >
-      <div className="flex items-start gap-3">
-        <div className="w-9 h-9 rounded-xl bg-white/20 inline-flex items-center justify-center">
-          <Clock className="w-5 h-5" />
-        </div>
-        <div className="flex-1">
-          <div className="text-sm font-extrabold">Complete your setup</div>
-          <p className="mt-0.5 text-xs text-white/90 leading-relaxed">
-            Your 14-day free trial ends June 13th. Subscribe to keep your AI assistant active.
-          </p>
-        </div>
-        <ChevronDown className="w-4 h-4 -rotate-90 mt-1" />
-      </div>
-    </Link>
   );
 }
