@@ -211,6 +211,78 @@ function SmartAlert({ mode }: { mode: "trial" | "api" | "lead" }) {
       </Link>
     );
   }
+
+function IncomingCallOverlay() {
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const liveCall = TRAFFIC.find((t) => t.live && t.channel === "call");
+
+  useEffect(() => {
+    if (!liveCall) return;
+    if (typeof window === "undefined") return;
+    if (sessionStorage.getItem("gs:incoming-shown") === "1") return;
+    const t = setTimeout(() => setOpen(true), 900);
+    return () => clearTimeout(t);
+  }, [liveCall]);
+
+  if (!open || !liveCall) return null;
+
+  const dismiss = () => {
+    sessionStorage.setItem("gs:incoming-shown", "1");
+    setOpen(false);
+  };
+  const answer = () => {
+    sessionStorage.setItem("gs:incoming-shown", "1");
+    setOpen(false);
+    navigate({ to: "/traffic/$id", params: { id: liveCall.id } });
+  };
+
+  const initials = (liveCall.customer ?? liveCall.number).slice(0, 2).toUpperCase();
+
+  return (
+    <div className="absolute inset-0 z-[60] flex flex-col items-center justify-between px-8 py-14 text-white animate-fade-up">
+      <div className="absolute inset-0 bg-gradient-to-br from-[#0b1f1a] via-[#0e2a24] to-[#04120f]" />
+      <div className="absolute inset-0 backdrop-blur-xl opacity-95" />
+      <div className="relative z-10 flex flex-col items-center text-center">
+        <div className="text-[11px] uppercase tracking-[0.2em] text-white/60">Incoming AI call</div>
+        <div className="mt-8 relative">
+          <span className="absolute inset-0 rounded-full bg-[var(--brand-lime)]/30 blur-2xl scale-125 animate-pulse" />
+          <span className="absolute -inset-4 rounded-full border border-white/15 animate-ping" />
+          <div className="relative w-28 h-28 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-3xl font-extrabold">
+            {initials}
+          </div>
+        </div>
+        <h2 className="mt-6 text-2xl font-bold">{liveCall.customer ?? liveCall.number}</h2>
+        <p className="mt-1 text-sm text-white/60">{liveCall.number}</p>
+        <p className="mt-1 text-xs text-white/50">{liveCall.summary}</p>
+      </div>
+      <div className="relative z-10 w-full flex items-center justify-around">
+        <button
+          type="button"
+          onClick={dismiss}
+          className="flex flex-col items-center gap-2"
+          aria-label="Decline"
+        >
+          <span className="w-16 h-16 rounded-full bg-red-600 hover:bg-red-500 flex items-center justify-center shadow-[0_10px_40px_-6px_rgba(220,38,38,0.75)]">
+            <PhoneOff className="w-6 h-6" />
+          </span>
+          <span className="text-xs text-white/80">Decline</span>
+        </button>
+        <button
+          type="button"
+          onClick={answer}
+          className="flex flex-col items-center gap-2"
+          aria-label="Answer"
+        >
+          <span className="w-16 h-16 rounded-full bg-[var(--brand-lime)] hover:brightness-110 flex items-center justify-center shadow-[0_10px_40px_-6px_rgba(139,195,74,0.75)] animate-pulse">
+            <PhoneCall className="w-6 h-6" />
+          </span>
+          <span className="text-xs text-white/80">Answer</span>
+        </button>
+      </div>
+    </div>
+  );
+}
   return (
     <Link
       to="/notifications/$id"
